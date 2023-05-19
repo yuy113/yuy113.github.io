@@ -1599,8 +1599,8 @@ src: url(data:application/font-sfnt;base64,AAEAAAARAQAABAAQR0RFRgs+Cz8AAjwQAAAAQ
         </ul>
         <nav role="navigation" id="toc">
           <ul>
-          <li><a href="#installing-and-loading-the-wactnet-package">Installing
-          and Loading the <code>wActNet</code> Package</a></li>
+          <li><a href="#install-and-load-the-wactnet-package">Install
+          and Load the <code>wActNet</code> Package</a></li>
           <li><a href="#simulate-data-and-generate-p-values-of-tests-on-pairwise-correlations">Simulate
           data and generate P values of tests on pairwise
           correlations</a></li>
@@ -1645,8 +1645,8 @@ Yao</span></li>
       
    
 <!-- Don't indent these lines or it will mess pre blocks indentation --> 
-<div id="installing-and-loading-the-wactnet-package" class="section level2">
-<h2>Installing and Loading the <code>wActNet</code> Package</h2>
+<div id="install-and-load-the-wactnet-package" class="section level2">
+<h2>Install and Load the <code>wActNet</code> Package</h2>
 <p>Begin by installing and loading the <code>devtools</code> package,
 then using the <code>install_github</code> function to install wActNet
 from GitHub as follows and we also need additional 2 R packages of
@@ -1699,11 +1699,12 @@ from GitHub as follows and we also need additional 2 R packages of
 <div id="simulate-data-and-generate-p-values-of-tests-on-pairwise-correlations" class="section level2">
 <h2>Simulate data and generate P values of tests on pairwise
 correlations</h2>
-<p>Next, for illustration, we generate pairwise correlation data from
-simulating random data based on multivariate normal distribution, and we
-could perform multiple nonparametric permutation tests for all pairwise
-correlations of simulated data and get corresponding P values from the
-permutation tests through the function <code>pval.perm.corr</code>.</p>
+<p>To illustrate the process, we begin by generating pairwise
+correlation data through the simulation of random data, which follows a
+multivariate normal distribution. Subsequently, we conduct multiple
+nonparametric permutation tests for all the pairwise correlations within
+the simulated data. Using the function <code>pval.perm.corr</code>, we
+obtain the corresponding P-values from these permutation tests.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="ot">&lt;-</span><span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">4000</span>),<span class="at">ncol=</span><span class="dv">40</span>,<span class="at">nrow=</span><span class="dv">100</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dat1)<span class="ot">&lt;-</span><span class="fu">paste</span>(<span class="st">&quot;Var&quot;</span>, <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>),<span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>pval.edge<span class="ot">&lt;-</span><span class="fu">pval.perm.corr</span>(dat1,<span class="at">nsim=</span><span class="dv">100</span>,<span class="at">MatchId=</span><span class="cn">NULL</span>,<span class="at">do.parallel=</span><span class="cn">FALSE</span>)</span>
@@ -1711,11 +1712,31 @@ permutation tests through the function <code>pval.perm.corr</code>.</p>
 </div>
 <div id="calculate-node-scores-and-edge-scores" class="section level2">
 <h2>Calculate node scores and edge scores</h2>
-<p>Simulate p values for all nodes and all possible connecting edges in
-one illustrated network with 40 nodes, through the function
-<code>uniform.beta.node.edge.score</code> to generate the list output of
-node score-<code>NodeScore</code>, edge scores-<code>EdgeScore</code>
-and network data of <code>igraph object</code>-<code>Network</code>.</p>
+<p>As an example for detecting all possible optimized subnetworks on
+simulated network data, we can utilize the approach proposed by Dittrich
+et al. in 2008 to use node scores only. However, we can further enhance
+the method by incorporating weighted combined node scores and edge
+scores using our proposed algorithm implemented in <code>wActNet</code>
+R package. This can be achieved through the implementation of the
+function <code>MultiModuleFind</code> within the R package.</p>
+<p>Within the <code>MultiModuleFind</code> function, we have the
+flexibility to set the maximum number of active subnetworks
+(<code>ncluster</code>) and choose between two methods: the one
+presented by Dittrich et al. in 2008 (<code>NodeOnly</code>) or our
+proposed method (<code>NodeEdge</code>). By specifying the method
+parameter, we can determine the preferred approach for analyzing the
+data.</p>
+<p>Furthermore, our proposed algorithm, which is implemented in the
+<code>wActNet</code> R package, allows us to fine-tune the optimization
+of active subnetworks by adjusting the parameter
+<code>weightratio.edge.node</code>. This parameter represents the
+weighted ratio between edge scores and node scores in the objective
+function.</p>
+<p>In summary, by combining the methodology introduced by Dittrich et
+al. with our own enhancements, including weighted node and edge scores,
+and utilizing the <code>MultiModuleFind</code> function with adjustable
+parameters, we can effectively detect the optimized active subnetworks
+on network data.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate the p values for all the possible edges in the network</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ind.pos.pval.edge<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">40</span><span class="sc">*</span><span class="dv">39</span><span class="sc">/</span><span class="dv">2</span>,<span class="dv">1</span>,<span class="fl">0.5</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>pval.edge<span class="ot">&lt;-</span>(<span class="dv">1</span><span class="sc">-</span>ind.pos.pval.edge)<span class="sc">*</span><span class="fu">runif</span>(<span class="dv">40</span><span class="sc">*</span><span class="dv">39</span><span class="sc">/</span><span class="dv">2</span>)<span class="sc">+</span>ind.pos.pval.edge<span class="sc">*</span><span class="fu">rbeta</span>(<span class="dv">40</span><span class="sc">*</span><span class="dv">39</span><span class="sc">/</span><span class="dv">2</span>,<span class="fl">0.1</span>,<span class="dv">1</span>)</span>
@@ -1732,9 +1753,9 @@ and network data of <code>igraph object</code>-<code>Network</code>.</p>
 <span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co">#igraph object-Network</span></span>
 <span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>network.test<span class="sc">$</span>Network</span></code></pre></div>
-<pre><code>## IGRAPH eb7b3c6 UN-- 40 780 -- 
+<pre><code>## IGRAPH 76dc0d0 UN-- 40 780 -- 
 ## + attr: name (v/c), score (v/n), score (e/n)
-## + edges from eb7b3c6 (vertex names):
+## + edges from 76dc0d0 (vertex names):
 ##  [1] Var1--Var2  Var1--Var3  Var1--Var4  Var1--Var5  Var1--Var6  Var1--Var7 
 ##  [7] Var1--Var8  Var1--Var9  Var1--Var10 Var1--Var11 Var1--Var12 Var1--Var13
 ## [13] Var1--Var14 Var1--Var15 Var1--Var16 Var1--Var17 Var1--Var18 Var1--Var19
@@ -1746,35 +1767,40 @@ and network data of <code>igraph object</code>-<code>Network</code>.</p>
 ## + ... omitted several edges</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#node scores</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>network.test<span class="sc">$</span>NodeScore</span></code></pre></div>
-<pre><code>##      Var1     Var10     Var11     Var12     Var13     Var14     Var15     Var16 
-## -4.356678 -4.499151 -4.206036 -3.606114 -2.577012 -3.188391 -4.412805 -3.034046 
-##     Var17     Var18     Var19      Var2     Var20     Var21     Var22     Var23 
-## -3.291786 -4.478442 -2.016398 -2.610412  2.338765 -4.243710 -3.756922 -4.308288 
-##     Var24     Var25     Var26     Var27     Var28     Var29      Var3     Var30 
-## -2.536931 -4.133057 -4.495578 -3.802826 -2.310723 -3.564486 -4.249156 -4.130960 
-##     Var31     Var32     Var33     Var34     Var35     Var36     Var37     Var38 
-##  1.772747 -4.118242 -3.569419 -3.960820  4.267000 -4.216485 -2.605390 -2.979169 
-##     Var39      Var4     Var40      Var5      Var6      Var7      Var8      Var9 
-## -4.134624 -4.389984 -3.340284 -3.713029 -4.220797 -3.981933 -4.217696 -4.478221</code></pre>
+<pre><code>##       Var1      Var10      Var11      Var12      Var13      Var14      Var15 
+## -4.4416068 -4.2103973 -3.8104765 -2.3010842  1.1843800 -4.0211219 -4.4018421 
+##      Var16      Var17      Var18      Var19       Var2      Var20      Var21 
+## -3.7022063 -3.4746391 -3.8147491 -0.6131121 37.6941623 -4.1760879 -4.2030738 
+##      Var22      Var23      Var24      Var25      Var26      Var27      Var28 
+## -3.4706728 -3.8136823 -4.3781649 -2.3847499 -3.8478467 -4.3898806 -2.9753625 
+##      Var29       Var3      Var30      Var31      Var32      Var33      Var34 
+##  2.6265740  1.9644610 -4.2937837 -2.5505543 43.2543809 -3.9465864 -3.7189441 
+##      Var35      Var36      Var37      Var38      Var39       Var4      Var40 
+## -4.2790960 -3.6133932 -4.3516840 -4.3895962  8.2296419 -4.1079058 -2.3872004 
+##       Var5       Var6       Var7       Var8       Var9 
+## -2.1504271 -4.4011169 -1.5526039 -3.4661739 -4.2432874</code></pre>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#edge scores</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#network.test$EdgeScore</span></span></code></pre></div>
 </div>
 <div id="detect-optimized-subnetworks" class="section level2">
 <h2>Detect optimized subnetworks</h2>
-<p>run an example to detect all possible optimized subnetworks on
-simulated network data above, we could run the method of Dittrich et
-al. 2008 based on node scores only and our proposed method based on
-weighted combined node scores and edge scores respectively throught the
-function <code>MultiModuleFind</code>. In the function
-<code>MultiModuleFind</code> we could set up the maximum possible number
-of acctive subnetworks-<code>ncluster</code> and select 2 methods of
-Dittrich et al. 2008 or our proposed method in <code>method</code>
-parameter of <code>NodeOnly</code> and <code>NodeEdge</code>
-respectively. Also in our proposed method implemented in
-<code>wActNet</code> R package we could also adjust the
-parameter-<code>weightratio.edge.node</code>: weighted ratio of edge
-scores versus node scores in objective function for optimizing active
-subnetworks.</p>
+<p>To detect all possible optimized subnetworks on simulated network
+data, we can illustrate through the following example. We will utilize
+two methods: the approach introduced by Dittrich et al. in 2008, which
+is based on node scores only, and our proposed method, which
+incorporates weighted sum of node scores and edge scores. These methods
+can be invoked through the function <code>MultiModuleFind</code>.</p>
+<p>Within the <code>MultiModuleFind</code> function, we have the
+flexibility to set the maximum number of active subnetworks
+(<code>ncluster</code>) and choose between the two methods, either
+<code>NodeOnly</code> for Dittrich et al.’s method or
+<code>NodeEdge</code> for our proposed method, using the
+<code>method</code> parameter.</p>
+<p>In our proposed method, which is implemented in the
+<code>wActNet</code> R package, we have an additional adjustable
+parameter called <code>weightratio.edge.node</code>. This parameter
+allows us to specify the weighted ratio of edge scores versus node
+scores in the objective function for optimizing active subnetworks.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>network.test1<span class="ot">&lt;-</span>network.test<span class="sc">$</span>Network</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>node.scores<span class="ot">&lt;-</span>network.test<span class="sc">$</span>NodeScore</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>edge.scores<span class="ot">&lt;-</span>network.test<span class="sc">$</span>EdgeScore</span>
@@ -1788,10 +1814,12 @@ subnetworks.</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#all possible optimized subnetworks in simulated network using Dittrich&#39;s method using node scores only</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>multi.mod.n</span></code></pre></div>
 <pre><code>## [[1]]
-## IGRAPH ea75c0c UN-- 3 3 -- 
+## IGRAPH 8320495 UN-- 6 15 -- 
 ## + attr: name (v/c), score (v/n), score (e/n), name (e/c)
-## + edges from ea75c0c (vertex names):
-## [1] Var20--Var31 Var20--Var35 Var31--Var35</code></pre>
+## + edges from 8320495 (vertex names):
+##  [1] Var13--Var2  Var13--Var29 Var2 --Var29 Var13--Var3  Var2 --Var3 
+##  [6] Var29--Var3  Var13--Var32 Var2 --Var32 Var29--Var32 Var3 --Var32
+## [11] Var13--Var39 Var2 --Var39 Var29--Var39 Var3 --Var39 Var32--Var39</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># identify all possible signaling modules in simulated network</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># using our proposed method based on node scores and edge scores</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>multi.mod.e<span class="ot">&lt;-</span><span class="fu">MultiModuleFind</span>(network.test1,node.scores,edge.scores,</span>
@@ -1801,10 +1829,14 @@ subnetworks.</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#all possible optimized subnetworks in simulated network using our proposed method based on node scores and edge scores</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>multi.mod.e</span></code></pre></div>
 <pre><code>## [[1]]
-## IGRAPH 529ccec UN-- 3 3 -- 
+## IGRAPH 01c20e4 UN-- 7 21 -- 
 ## + attr: name (v/c), score (v/n), score (e/n), name (e/c)
-## + edges from 529ccec (vertex names):
-## [1] Var20--Var31 Var20--Var35 Var31--Var35</code></pre>
+## + edges from 01c20e4 (vertex names):
+##  [1] Var2 --Var3  Var2 --Var4  Var13--Var2  Var2 --Var29 Var2 --Var32
+##  [6] Var2 --Var39 Var3 --Var4  Var13--Var3  Var29--Var3  Var3 --Var32
+## [11] Var3 --Var39 Var13--Var4  Var29--Var4  Var32--Var4  Var39--Var4 
+## [16] Var13--Var29 Var13--Var32 Var13--Var39 Var29--Var32 Var29--Var39
+## [21] Var32--Var39</code></pre>
 </div>
 <div id="contact-us-contribute" class="section level2">
 <h2>Contact Us / Contribute</h2>
