@@ -14,9 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Install and Load the `wActNet` Package
 
-
-Begin by installing and loading the `devtools` package, then using the `install_github` function to install wActNet from GitHub as follows and we also need additional 2 R packages of `igraph` and `BioNet` from BioConductor <https://www.bioconductor.org/install/>.
-
+Begin by installing and loading the `devtools` package. Use the install_github function to install `wActNet` from `GitHub` as shown below. Our package depends on two additional R packages, `igraph` and `BioNet`, and the second one can be downloaded from `BioConductor` <https://www.bioconductor.org/install/>.
 
 
 ```{r,results='hide' }
@@ -35,7 +33,10 @@ library(igraph)
 
 ## Simulate data and generate P values of tests on pairwise correlations
 
-To illustrate the process, we begin by generating pairwise correlation data through the simulation of random data, which follows a multivariate normal distribution. Subsequently, we conduct multiple nonparametric permutation tests for all the pairwise correlations within the simulated data. Using the function `pval.perm.corr`, we obtain the corresponding P-values from these permutation tests.
+
+To illustrate the process, we simulate data ($n$ observations, $p$ features) from a multivariate normal distribution, which is then used to generate data on ${p}\choose{2}$ pairwise correlations data through the simulation of random data, which follows a multivariate normal distribution. Subsequently, we use the function `pval.perm.corr()` to conduct multiple conduct nonparametric permutation tests for all the pairwise correlations within the simulated data. Using the function and obtaining corresponding P values, we obtain the corresponding P-values from these permutation tests.
+
+
 
 ```{r}
 dat1<-matrix(rnorm(4000),ncol=40,nrow=100)
@@ -46,13 +47,9 @@ pval.edge<-pval.perm.corr(dat1,nsim=100,MatchId=NULL,do.parallel=FALSE)
 
 ## Calculate node scores and edge scores 
 
-As an example for detecting all possible optimized subnetworks on simulated network data, we can utilize the approach proposed by Dittrich et al. in 2008 to use node scores only. However, we can further enhance the method by incorporating weighted combined node scores and edge scores using our proposed algorithm implemented in `wActNet` R package. This can be achieved through the implementation of the function `MultiModuleFind` within the R package.
 
-Within the `MultiModuleFind` function, we have the flexibility to set the maximum number of active subnetworks (`ncluster`) and choose between two methods: the one presented by Dittrich et al. in 2008 (`NodeOnly`) or our proposed method (`NodeEdge`). By specifying the method parameter, we can determine the preferred approach for analyzing the data.
+To illustrate our approach, we begin by simulating a network of 40 nodes. We generate P values for all nodes and potential connecting edges using the `uniform.beta.node.edge.score()` function. The output of this function is a list consisting of node scores (`NodeScore`), edge scores (`EdgeScore`), and the network data in the form of an igraph object (`Network`).
 
-Furthermore, our proposed algorithm, which is implemented in the `wActNet` R package, allows us to fine-tune the optimization of active subnetworks by adjusting the parameter `weightratio.edge.node`. This parameter represents the weighted ratio between edge scores and node scores in the objective function.
-
-In summary, by combining the methodology introduced by Dittrich et al. with our own enhancements, including weighted node and edge scores, and utilizing the `MultiModuleFind` function with adjustable parameters, we can effectively detect the optimized active subnetworks on network data.
 
 
 ```{r}
@@ -80,11 +77,13 @@ network.test$NodeScore
 
 
 ## Detect optimized subnetworks 
-To detect all possible optimized subnetworks on simulated network data, we can illustrate through the following example. We will utilize two methods: the approach introduced by Dittrich et al. in 2008, which is based on node scores only, and our proposed method, which incorporates weighted sum of node scores and edge scores. These methods can be invoked through the function `MultiModuleFind`.
 
-Within the `MultiModuleFind` function, we have the flexibility to set the maximum number of active subnetworks (`ncluster`) and choose between the two methods, either `NodeOnly` for Dittrich et al.'s method or `NodeEdge` for our proposed method, using the `method` parameter.
 
-In our proposed method, which is implemented in the `wActNet` R package, we have an additional adjustable parameter called `weightratio.edge.node`. This parameter allows us to specify the weighted ratio of edge scores versus node scores in the objective function for optimizing active subnetworks.
+To detect active subnetworks within our network, we illustrate the approach by Dittrich et al. in 2008 and compare to the `wActNet` algorithm. The algorithm proposed by Dittrich et al. in 2008 uses node scores only. The `wActNet` algorithm combines node scores and edge scores using the `MultiModuleFind` function. Within the `MultiModuleFind` function, we have the flexibility to set the maximum number of active subnetworks (`ncluster`) and choose between two methods: the one presented by Dittrich et al. in 2008 (method=`NodeOnly`) or the wActNet approach (method=`NodeEdge`). 
+
+Furthermore, the wActNet algorithm allows us to fine-tune the optimization of active subnetworks by adjusting the parameter `weightratio.edge.node`. This parameter represents the weighted ratio between edge scores and node scores in the objective function.
+
+In summary, by combining the methodology introduced by Dittrich et al. (2008) with the `wActNet` extension that includes both  node and edge scores, we can effectively detect the optimized active subnetworks on network data.
 
 
 Please note when the function completes execution and fails to identify any further optimized or active subnetworks, a warning message "No positive nodes" will be generated.
