@@ -91,7 +91,7 @@ In our proposed method, which is implemented in the `wActNet` R package, we have
 network.test1<-network.test$Network
 node.scores<-network.test$NodeScore
 edge.scores<-network.test$EdgeScore
-
+#Note: both BioNet and wActNet R packages stop running and can't detect any optimized/active subnetwork further and complete, a warning output message-"No positive node" will be generated.
 #identify all possible optimized subnetworks in simulated network
 # using Dittrich's method using node scores only
 multi.mod.n<-MultiModuleFind(network.test1,node.scores,edge.scores,
