@@ -6945,10 +6945,11 @@ Yao</span></li>
 <!-- Don't indent these lines or it will mess pre blocks indentation --> 
 <div id="install-and-load-the-wactnet-package" class="section level2">
 <h2>Install and Load the <code>wActNet</code> Package</h2>
-<p>Begin by installing and loading the <code>devtools</code> package,
-then using the <code>install_github</code> function to install wActNet
-from GitHub as follows and we also need additional 2 R packages of
-<code>igraph</code> and <code>BioNet</code> from BioConductor <a href="https://www.bioconductor.org/install/" class="uri">https://www.bioconductor.org/install/</a>.</p>
+<p>Begin by installing and loading the <code>devtools</code> package.
+Use the install_github function to install <code>wActNet</code> from
+<code>GitHub</code> as shown below. Our package depends on two
+additional R packages, <code>igraph</code> and <code>BioNet</code>, and
+the second one can be downloaded from <code>BioConductor</code> <a href="https://www.bioconductor.org/install/" class="uri">https://www.bioconductor.org/install/</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#please comment the below code out if you already install the package-wActNet from github</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#library(devtools)</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#if (!requireNamespace(&quot;BiocManager&quot;, quietly = TRUE))</span></span>
@@ -6997,12 +6998,14 @@ from GitHub as follows and we also need additional 2 R packages of
 <div id="simulate-data-and-generate-p-values-of-tests-on-pairwise-correlations" class="section level2">
 <h2>Simulate data and generate P values of tests on pairwise
 correlations</h2>
-<p>To illustrate the process, we begin by generating pairwise
-correlation data through the simulation of random data, which follows a
-multivariate normal distribution. Subsequently, we conduct multiple
-nonparametric permutation tests for all the pairwise correlations within
-the simulated data. Using the function <code>pval.perm.corr</code>, we
-obtain the corresponding P-values from these permutation tests.</p>
+<p>To illustrate the process, we simulate data (<span class="math inline">\(n\)</span> observations, <span class="math inline">\(p\)</span> features) from a multivariate normal
+distribution, which is then used to generate data on <span class="math inline">\({p}\choose{2}\)</span> pairwise correlations data
+through the simulation of random data, which follows a multivariate
+normal distribution. Subsequently, we use the function
+<code>pval.perm.corr()</code> to conduct multiple conduct nonparametric
+permutation tests for all the pairwise correlations within the simulated
+data. Using the function and obtaining corresponding P values, we obtain
+the corresponding P-values from these permutation tests.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="ot">&lt;-</span><span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">4000</span>),<span class="at">ncol=</span><span class="dv">40</span>,<span class="at">nrow=</span><span class="dv">100</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dat1)<span class="ot">&lt;-</span><span class="fu">paste</span>(<span class="st">&quot;Var&quot;</span>, <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>),<span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>pval.edge<span class="ot">&lt;-</span><span class="fu">pval.perm.corr</span>(dat1,<span class="at">nsim=</span><span class="dv">100</span>,<span class="at">MatchId=</span><span class="cn">NULL</span>,<span class="at">do.parallel=</span><span class="cn">FALSE</span>)</span>
@@ -7010,31 +7013,12 @@ obtain the corresponding P-values from these permutation tests.</p>
 </div>
 <div id="calculate-node-scores-and-edge-scores" class="section level2">
 <h2>Calculate node scores and edge scores</h2>
-<p>As an example for detecting all possible optimized subnetworks on
-simulated network data, we can utilize the approach proposed by Dittrich
-et al. in 2008 to use node scores only. However, we can further enhance
-the method by incorporating weighted combined node scores and edge
-scores using our proposed algorithm implemented in <code>wActNet</code>
-R package. This can be achieved through the implementation of the
-function <code>MultiModuleFind</code> within the R package.</p>
-<p>Within the <code>MultiModuleFind</code> function, we have the
-flexibility to set the maximum number of active subnetworks
-(<code>ncluster</code>) and choose between two methods: the one
-presented by Dittrich et al. in 2008 (<code>NodeOnly</code>) or our
-proposed method (<code>NodeEdge</code>). By specifying the method
-parameter, we can determine the preferred approach for analyzing the
-data.</p>
-<p>Furthermore, our proposed algorithm, which is implemented in the
-<code>wActNet</code> R package, allows us to fine-tune the optimization
-of active subnetworks by adjusting the parameter
-<code>weightratio.edge.node</code>. This parameter represents the
-weighted ratio between edge scores and node scores in the objective
-function.</p>
-<p>In summary, by combining the methodology introduced by Dittrich et
-al. with our own enhancements, including weighted node and edge scores,
-and utilizing the <code>MultiModuleFind</code> function with adjustable
-parameters, we can effectively detect the optimized active subnetworks
-on network data.</p>
+<p>To illustrate our approach, we begin by simulating a network of 40
+nodes. We generate P values for all nodes and potential connecting edges
+using the <code>uniform.beta.node.edge.score()</code> function. The
+output of this function is a list consisting of node scores
+(<code>NodeScore</code>), edge scores (<code>EdgeScore</code>), and the
+network data in the form of an igraph object (<code>Network</code>).</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate the p values for all the possible edges in the network</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ind.pos.pval.edge<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">40</span><span class="sc">*</span><span class="dv">39</span><span class="sc">/</span><span class="dv">2</span>,<span class="dv">1</span>,<span class="fl">0.5</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>pval.edge<span class="ot">&lt;-</span>(<span class="dv">1</span><span class="sc">-</span>ind.pos.pval.edge)<span class="sc">*</span><span class="fu">runif</span>(<span class="dv">40</span><span class="sc">*</span><span class="dv">39</span><span class="sc">/</span><span class="dv">2</span>)<span class="sc">+</span>ind.pos.pval.edge<span class="sc">*</span><span class="fu">rbeta</span>(<span class="dv">40</span><span class="sc">*</span><span class="dv">39</span><span class="sc">/</span><span class="dv">2</span>,<span class="fl">0.1</span>,<span class="dv">1</span>)</span>
@@ -7051,9 +7035,9 @@ on network data.</p>
 <span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co">#igraph object-Network</span></span>
 <span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>network.test<span class="sc">$</span>Network</span></code></pre></div>
-<pre><code>## IGRAPH 78ce5d6 UN-- 40 780 -- 
+<pre><code>## IGRAPH c55a808 UN-- 40 780 -- 
 ## + attr: name (v/c), score (v/n), score (e/n)
-## + edges from 78ce5d6 (vertex names):
+## + edges from c55a808 (vertex names):
 ##  [1] Var1--Var2  Var1--Var3  Var1--Var4  Var1--Var5  Var1--Var6  Var1--Var7 
 ##  [7] Var1--Var8  Var1--Var9  Var1--Var10 Var1--Var11 Var1--Var12 Var1--Var13
 ## [13] Var1--Var14 Var1--Var15 Var1--Var16 Var1--Var17 Var1--Var18 Var1--Var19
@@ -7065,38 +7049,43 @@ on network data.</p>
 ## + ... omitted several edges</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#node scores</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>network.test<span class="sc">$</span>NodeScore</span></code></pre></div>
-<pre><code>##      Var1     Var10     Var11     Var12     Var13     Var14     Var15     Var16 
-## -4.016189 -3.782482 -2.862639 -2.642328  8.322538 -2.815615 20.534041  0.791320 
-##     Var17     Var18     Var19      Var2     Var20     Var21     Var22     Var23 
-## -2.240579 -3.896679  2.564081  2.027294 -1.989984 -3.199519 -3.456821 -2.816552 
-##     Var24     Var25     Var26     Var27     Var28     Var29      Var3     Var30 
-## -2.617150 -1.362468 -3.982205 -2.285226 -3.965553 -2.970759 -3.055466 -3.775954 
-##     Var31     Var32     Var33     Var34     Var35     Var36     Var37     Var38 
-## -3.597540 11.615490 -3.799453 -2.742564 -3.510708 -2.533334 -3.943056 -3.448699 
-##     Var39      Var4     Var40      Var5      Var6      Var7      Var8      Var9 
-## -4.052019 20.159210  8.250473 -2.849400 -3.619576 -4.027386 -3.988578 -3.310527</code></pre>
+<pre><code>##       Var1      Var10      Var11      Var12      Var13      Var14      Var15 
+## -3.2019666 -3.3776795 -3.3920775 -3.4154055 -4.0016615 -4.0330136 -4.0652216 
+##      Var16      Var17      Var18      Var19       Var2      Var20      Var21 
+## -2.5122282 -4.3257021 -4.2088687 -4.1769112 -3.6955525 -2.8401093 -4.2526225 
+##      Var22      Var23      Var24      Var25      Var26      Var27      Var28 
+## -3.1010112 16.5458853  3.0581421 13.0581223 -3.8068915 -0.6727862 -3.0994937 
+##      Var29       Var3      Var30      Var31      Var32      Var33      Var34 
+## -3.4774810 -3.7706772 -3.3833227 -4.0445866 -3.5929670 -3.6918884 -3.8268458 
+##      Var35      Var36      Var37      Var38      Var39       Var4      Var40 
+##  0.1866082 -3.7193212 -3.6071701 -4.1115256 -4.0629060 -3.5253132 10.4865964 
+##       Var5       Var6       Var7       Var8       Var9 
+## -3.0868110 -3.2974794  0.6453104 28.3144365 -4.0823167</code></pre>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#edge scores</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#network.test$EdgeScore</span></span></code></pre></div>
 </div>
 <div id="detect-optimized-subnetworks" class="section level2">
 <h2>Detect optimized subnetworks</h2>
-<p>To detect all possible optimized subnetworks on simulated network
-data, we can illustrate through the following example. We will utilize
-two methods: the approach introduced by Dittrich et al. in 2008, which
-is based on node scores only, and our proposed method, which
-incorporates weighted sum of node scores and edge scores. These methods
-can be invoked through the function <code>MultiModuleFind</code>.</p>
-<p>Within the <code>MultiModuleFind</code> function, we have the
-flexibility to set the maximum number of active subnetworks
-(<code>ncluster</code>) and choose between the two methods, either
-<code>NodeOnly</code> for Dittrich et al.’s method or
-<code>NodeEdge</code> for our proposed method, using the
-<code>method</code> parameter.</p>
-<p>In our proposed method, which is implemented in the
-<code>wActNet</code> R package, we have an additional adjustable
-parameter called <code>weightratio.edge.node</code>. This parameter
-allows us to specify the weighted ratio of edge scores versus node
-scores in the objective function for optimizing active subnetworks.</p>
+<p>To detect active subnetworks within our network, we illustrate the
+approach by Dittrich et al. in 2008 and compare to the
+<code>wActNet</code> algorithm. The algorithm proposed by Dittrich et
+al. in 2008 uses node scores only. The <code>wActNet</code> algorithm
+combines node scores and edge scores using the
+<code>MultiModuleFind</code> function. Within the
+<code>MultiModuleFind</code> function, we have the flexibility to set
+the maximum number of active subnetworks (<code>ncluster</code>) and
+choose between two methods: the one presented by Dittrich et al. in 2008
+(method=<code>NodeOnly</code>) or the wActNet approach
+(method=<code>NodeEdge</code>).</p>
+<p>Furthermore, the wActNet algorithm allows us to fine-tune the
+optimization of active subnetworks by adjusting the parameter
+<code>weightratio.edge.node</code>. This parameter represents the
+weighted ratio between edge scores and node scores in the objective
+function.</p>
+<p>In summary, by combining the methodology introduced by Dittrich et
+al. (2008) with the <code>wActNet</code> extension that includes both
+node and edge scores, we can effectively detect the optimized active
+subnetworks on network data.</p>
 <p>Please note when the function completes execution and fails to
 identify any further optimized or active subnetworks, a warning message
 “No positive nodes” will be generated.</p>
@@ -7114,15 +7103,14 @@ identify any further optimized or active subnetworks, a warning message
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#all possible optimized subnetworks in simulated network using Dittrich&#39;s method using node scores only</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>multi.mod.n</span></code></pre></div>
 <pre><code>## [[1]]
-## IGRAPH f30cd98 UN-- 8 28 -- 
+## IGRAPH 323dd86 UN-- 7 21 -- 
 ## + attr: name (v/c), score (v/n), score (e/n), name (e/c)
-## + edges from f30cd98 (vertex names):
-##  [1] Var13--Var15 Var13--Var16 Var15--Var16 Var13--Var19 Var15--Var19
-##  [6] Var16--Var19 Var13--Var2  Var15--Var2  Var16--Var2  Var19--Var2 
-## [11] Var13--Var32 Var15--Var32 Var16--Var32 Var19--Var32 Var2 --Var32
-## [16] Var13--Var4  Var15--Var4  Var16--Var4  Var19--Var4  Var2 --Var4 
-## [21] Var32--Var4  Var13--Var40 Var15--Var40 Var16--Var40 Var19--Var40
-## [26] Var2 --Var40 Var32--Var40 Var4 --Var40</code></pre>
+## + edges from 323dd86 (vertex names):
+##  [1] Var23--Var24 Var23--Var25 Var24--Var25 Var23--Var35 Var24--Var35
+##  [6] Var25--Var35 Var23--Var40 Var24--Var40 Var25--Var40 Var35--Var40
+## [11] Var23--Var7  Var24--Var7  Var25--Var7  Var35--Var7  Var40--Var7 
+## [16] Var23--Var8  Var24--Var8  Var25--Var8  Var35--Var8  Var40--Var8 
+## [21] Var7 --Var8</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#visualize the final illustrated detected optimized subnetwork by BioNet algorithm</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co">#for edges, edge score &gt;=0, solid line, edge score &lt; 0, dash line</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#for nodes, node score &gt;=0, red color, edge score &lt; 0, grey color </span></span>
@@ -7150,8 +7138,8 @@ identify any further optimized or active subnetworks, a warning message
 <span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>  data_node<span class="ot">&lt;-</span> <span class="fu">toVisNetworkData</span>(dat_node)</span>
 <span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">visNetwork</span>(<span class="at">nodes =</span> data_node<span class="sc">$</span>nodes, <span class="at">edges =</span> data_node<span class="sc">$</span>edges, <span class="at">height =</span> <span class="st">&quot;800px&quot;</span>)<span class="sc">%&gt;%</span> <span class="fu">visNodes</span>(<span class="at">font=</span><span class="fu">list</span>(<span class="at">size=</span><span class="dv">20</span>))</span></code></pre></div>
-<div id="htmlwidget-69829ecc5fd0b0aa77a3" style="width:768px;height:800px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-69829ecc5fd0b0aa77a3">{"x":{"nodes":{"id":["Var13","Var15","Var16","Var19","Var2","Var32","Var4","Var40"],"score":[8.3225378593708,20.5340408934365,0.791319959598701,2.5640810402307,2.02729373552813,11.6154897428266,20.159210091367,8.25047321281292],"color":["#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A"],"size":[9.6612689296854,15.7670204467182,5.89565997979935,6.78204052011535,6.51364686776406,11.3077448714133,15.5796050456835,9.62523660640646],"label":["Var13","Var15","Var16","Var19","Var2","Var32","Var4","Var40"]},"edges":{"from":["Var13","Var13","Var15","Var13","Var15","Var16","Var13","Var15","Var16","Var19","Var13","Var15","Var16","Var19","Var2","Var13","Var15","Var16","Var19","Var2","Var32","Var13","Var15","Var16","Var19","Var2","Var32","Var4"],"to":["Var15","Var16","Var16","Var19","Var19","Var19","Var2","Var2","Var2","Var2","Var32","Var32","Var32","Var32","Var32","Var4","Var4","Var4","Var4","Var4","Var4","Var40","Var40","Var40","Var40","Var40","Var40","Var40"],"score":[-2.38026248014122,15.5005875412174,6.75505135240098,-1.90202598175201,10.6806252461006,-2.69689463323905,-2.4519933502212,-2.93932830897823,-2.03848516888117,4.07336708388913,-2.76322435724734,-1.44078659137459,-2.77366378959564,-2.94053505940787,0.244519168717032,-1.62126793205345,-2.75721006571438,-2.41445589159682,-2.65272070364442,-1.9883660159956,17.2174884425573,19.3293884623254,-2.87399388599116,-2.53553873951633,-1.92953212237673,-1.40984377358229,15.7974056267729,0.41064039899091],"name":["Var13_Var15","Var13_Var16","Var15_Var16","Var13_Var19","Var15_Var19","Var16_Var19","Var2_Var13","Var2_Var15","Var2_Var16","Var2_Var19","Var13_Var32","Var15_Var32","Var16_Var32","Var19_Var32","Var2_Var32","Var4_Var13","Var4_Var15","Var4_Var16","Var4_Var19","Var2_Var4","Var4_Var32","Var13_Var40","Var15_Var40","Var16_Var40","Var19_Var40","Var2_Var40","Var32_Var40","Var4_Var40"],"dashes":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"width":[-0.264078744042365,5.10017626236521,2.47651540572029,-0.120607794525604,3.65418757383018,-0.359068389971715,-0.28559800506636,-0.431798492693468,-0.16154555066435,1.67201012516674,-0.378967307174203,0.017764022587624,-0.382099136878693,-0.432160517822362,0.52335575061511,-0.0363803796160343,-0.377163019714314,-0.274336767479047,-0.345816211093327,-0.146509804798679,5.6152465327672,6.24881653869762,-0.412198165797349,-0.310661621854898,-0.128859636713021,0.0270468679253131,5.18922168803187,0.573192119697273],"color":["grey","#66A61E","#66A61E","grey","#66A61E","grey","grey","grey","grey","#66A61E","grey","grey","grey","grey","#66A61E","grey","grey","grey","grey","grey","#66A61E","#66A61E","grey","grey","grey","grey","#66A61E","#66A61E"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","font":{"size":20}},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"800px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-f56ed864e958805f2ba8" style="width:768px;height:800px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f56ed864e958805f2ba8">{"x":{"nodes":{"id":["Var23","Var24","Var25","Var35","Var40","Var7","Var8"],"score":[16.5458853107944,3.05814207780445,13.0581223050767,0.186608215320133,10.4865964296155,0.645310445658562,28.314436455872],"color":["#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A"],"size":[13.7729426553972,7.02907103890223,12.0290611525383,5.59330410766007,10.7432982148077,5.82265522282928,19.657218227936],"label":["Var23","Var24","Var25","Var35","Var40","Var7","Var8"]},"edges":{"from":["Var23","Var23","Var24","Var23","Var24","Var25","Var23","Var24","Var25","Var35","Var23","Var24","Var25","Var35","Var40","Var23","Var24","Var25","Var35","Var40","Var7"],"to":["Var24","Var25","Var25","Var35","Var35","Var35","Var40","Var40","Var40","Var40","Var7","Var7","Var7","Var7","Var7","Var8","Var8","Var8","Var8","Var8","Var8"],"score":[10.4275488033586,1.56427817840967,-1.71514483304168,2.39659505809287,13.8591649025236,-2.21820159710109,-2.27056310926584,-2.77064790809001,8.62373891712395,-1.60176699021851,-2.7170162310163,10.3549253452339,-2.26211489011477,-2.83720600520017,-2.30338777729183,-1.18667479879076,1.10910520261442,23.1725905544287,-1.80447519249087,-2.67424113545459,-1.59182823134519],"name":["Var23_Var24","Var23_Var25","Var24_Var25","Var23_Var35","Var24_Var35","Var25_Var35","Var23_Var40","Var24_Var40","Var25_Var40","Var35_Var40","Var7_Var23","Var7_Var24","Var7_Var25","Var7_Var35","Var7_Var40","Var8_Var23","Var8_Var24","Var8_Var25","Var8_Var35","Var8_Var40","Var7_Var8"],"dashes":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"width":[3.57826464100757,0.9192834535229,-0.064543449912505,1.16897851742786,4.60774947075709,-0.215460479130328,-0.231168932779753,-0.381194372427002,3.03712167513718,-0.030530097065554,-0.365104869304889,3.55647760357016,-0.228634467034432,-0.401161801560052,-0.24101633318755,0.0939975603627705,0.782731560784325,7.40177716632861,-0.0913425577472624,-0.352272340636378,-0.0275484694035558],"color":["#66A61E","#66A61E","grey","#66A61E","#66A61E","grey","grey","grey","#66A61E","grey","grey","#66A61E","grey","grey","grey","grey","#66A61E","#66A61E","grey","grey","grey"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","font":{"size":20}},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"800px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># identify all possible signaling modules in simulated network</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># using our proposed method based on node scores and edge scores</span></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>multi.mod.e<span class="ot">&lt;-</span><span class="fu">MultiModuleFind</span>(network.test1,node.scores,edge.scores,</span>
@@ -7161,17 +7149,15 @@ identify any further optimized or active subnetworks, a warning message
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#all possible optimized subnetworks in simulated network using our proposed method based on node scores and edge scores</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>multi.mod.e</span></code></pre></div>
 <pre><code>## [[1]]
-## IGRAPH 380ad78 UN-- 9 36 -- 
+## IGRAPH 1b0f721 UN-- 8 28 -- 
 ## + attr: name (v/c), score (v/n), score (e/n), name (e/c)
-## + edges from 380ad78 (vertex names):
-##  [1] Var2 --Var3  Var2 --Var4  Var13--Var2  Var15--Var2  Var16--Var2 
-##  [6] Var19--Var2  Var2 --Var32 Var2 --Var40 Var4 --Var3  Var13--Var3 
-## [11] Var15--Var3  Var16--Var3  Var19--Var3  Var32--Var3  Var40--Var3 
-## [16] Var13--Var4  Var15--Var4  Var16--Var4  Var19--Var4  Var32--Var4 
-## [21] Var4 --Var40 Var13--Var15 Var13--Var16 Var13--Var19 Var13--Var32
-## [26] Var13--Var40 Var15--Var16 Var15--Var19 Var15--Var32 Var15--Var40
-## [31] Var16--Var19 Var16--Var32 Var16--Var40 Var19--Var32 Var19--Var40
-## [36] Var32--Var40</code></pre>
+## + edges from 1b0f721 (vertex names):
+##  [1] Var7 --Var6  Var8 --Var6  Var23--Var6  Var24--Var6  Var25--Var6 
+##  [6] Var35--Var6  Var40--Var6  Var7 --Var8  Var23--Var7  Var24--Var7 
+## [11] Var25--Var7  Var35--Var7  Var40--Var7  Var23--Var8  Var24--Var8 
+## [16] Var25--Var8  Var35--Var8  Var40--Var8  Var23--Var24 Var23--Var25
+## [21] Var23--Var35 Var23--Var40 Var24--Var25 Var24--Var35 Var24--Var40
+## [26] Var25--Var35 Var25--Var40 Var35--Var40</code></pre>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#visualize the final illustrated detected optimized subnetwork by our proposed algorithm</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co">#for edges, edge score &gt;=0, solid line, edge score &lt; 0, dash line</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#for nodes, node score &gt;=0, red color, edge score &lt; 0, grey color </span></span>
@@ -7199,8 +7185,8 @@ identify any further optimized or active subnetworks, a warning message
 <span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>  data_nodeedge <span class="ot">&lt;-</span> <span class="fu">toVisNetworkData</span>(dat_nodeedge)</span>
 <span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">visNetwork</span>(<span class="at">nodes =</span> data_nodeedge<span class="sc">$</span>nodes, <span class="at">edges =</span> data_nodeedge<span class="sc">$</span>edges, <span class="at">height =</span> <span class="st">&quot;800px&quot;</span>)<span class="sc">%&gt;%</span> <span class="fu">visNodes</span>(<span class="at">font=</span><span class="fu">list</span>(<span class="at">size=</span><span class="dv">20</span>))</span></code></pre></div>
-<div id="htmlwidget-308d423887bb370862ed" style="width:768px;height:800px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-308d423887bb370862ed">{"x":{"nodes":{"id":["Var13","Var15","Var16","Var19","Var2","Var32","Var4","Var40","Var3"],"score":[8.3225378593708,20.5340408934365,0.791319959598701,2.5640810402307,2.02729373552813,11.6154897428266,20.159210091367,8.25047321281292,-3.05546570655787],"color":["#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","grey"],"size":[9.6612689296854,15.7670204467182,5.89565997979935,6.78204052011535,6.51364686776406,11.3077448714133,15.5796050456835,9.62523660640646,3.97226714672106],"label":["Var13","Var15","Var16","Var19","Var2","Var32","Var4","Var40","Var3"]},"edges":{"from":["Var2","Var2","Var13","Var15","Var16","Var19","Var2","Var2","Var4","Var13","Var15","Var16","Var19","Var32","Var40","Var13","Var15","Var16","Var19","Var32","Var4","Var13","Var13","Var13","Var13","Var13","Var15","Var15","Var15","Var15","Var16","Var16","Var16","Var19","Var19","Var32"],"to":["Var3","Var4","Var2","Var2","Var2","Var2","Var32","Var40","Var3","Var3","Var3","Var3","Var3","Var3","Var3","Var4","Var4","Var4","Var4","Var4","Var40","Var15","Var16","Var19","Var32","Var40","Var16","Var19","Var32","Var40","Var19","Var32","Var40","Var32","Var40","Var40"],"score":[-1.53645862913082,-1.9883660159956,-2.4519933502212,-2.93932830897823,-2.03848516888117,4.07336708388913,0.244519168717032,-1.40984377358229,-2.80962005950513,-2.73374772240198,0.694303489901581,7.51213118718405,-2.43020933002592,-2.61885665330729,-1.47292942572633,-1.62126793205345,-2.75721006571438,-2.41445589159682,-2.65272070364442,17.2174884425573,0.41064039899091,-2.38026248014122,15.5005875412174,-1.90202598175201,-2.76322435724734,19.3293884623254,6.75505135240098,10.6806252461006,-1.44078659137459,-2.87399388599116,-2.69689463323905,-2.77366378959564,-2.53553873951633,-2.94053505940787,-1.92953212237673,15.7974056267729],"name":["Var2_Var3","Var2_Var4","Var2_Var13","Var2_Var15","Var2_Var16","Var2_Var19","Var2_Var32","Var2_Var40","Var3_Var4","Var3_Var13","Var3_Var15","Var3_Var16","Var3_Var19","Var3_Var32","Var3_Var40","Var4_Var13","Var4_Var15","Var4_Var16","Var4_Var19","Var4_Var32","Var4_Var40","Var13_Var15","Var13_Var16","Var13_Var19","Var13_Var32","Var13_Var40","Var15_Var16","Var15_Var19","Var15_Var32","Var15_Var40","Var16_Var19","Var16_Var32","Var16_Var40","Var19_Var32","Var19_Var40","Var32_Var40"],"dashes":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"width":[-0.0109375887392469,-0.146509804798679,-0.28559800506636,-0.431798492693468,-0.16154555066435,1.67201012516674,0.52335575061511,0.0270468679253131,-0.392886017851538,-0.370124316720594,0.658291046970474,2.70363935615521,-0.279062799007776,-0.335656995992187,0.0081211722821025,-0.0363803796160343,-0.377163019714314,-0.274336767479047,-0.345816211093327,5.6152465327672,0.573192119697273,-0.264078744042365,5.10017626236521,-0.120607794525604,-0.378967307174203,6.24881653869762,2.47651540572029,3.65418757383018,0.017764022587624,-0.412198165797349,-0.359068389971715,-0.382099136878693,-0.310661621854898,-0.432160517822362,-0.128859636713021,5.18922168803187],"color":["grey","grey","grey","grey","grey","#66A61E","#66A61E","grey","grey","grey","#66A61E","#66A61E","grey","grey","grey","grey","grey","grey","grey","#66A61E","#66A61E","grey","#66A61E","grey","grey","#66A61E","#66A61E","#66A61E","grey","grey","grey","grey","grey","grey","grey","#66A61E"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","font":{"size":20}},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"800px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-95c4711d21f3ebf31823" style="width:768px;height:800px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-95c4711d21f3ebf31823">{"x":{"nodes":{"id":["Var23","Var24","Var25","Var35","Var40","Var7","Var8","Var6"],"score":[16.5458853107944,3.05814207780445,13.0581223050767,0.186608215320133,10.4865964296155,0.645310445658562,28.314436455872,-3.29747944632773],"color":["#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","grey"],"size":[13.7729426553972,7.02907103890223,12.0290611525383,5.59330410766007,10.7432982148077,5.82265522282928,19.657218227936,3.85126027683614],"label":["Var23","Var24","Var25","Var35","Var40","Var7","Var8","Var6"]},"edges":{"from":["Var7","Var8","Var23","Var24","Var25","Var35","Var40","Var7","Var23","Var24","Var25","Var35","Var40","Var23","Var24","Var25","Var35","Var40","Var23","Var23","Var23","Var23","Var24","Var24","Var24","Var25","Var25","Var35"],"to":["Var6","Var6","Var6","Var6","Var6","Var6","Var6","Var8","Var7","Var7","Var7","Var7","Var7","Var8","Var8","Var8","Var8","Var8","Var24","Var25","Var35","Var40","Var25","Var35","Var40","Var35","Var40","Var40"],"score":[12.3517771039965,1.12757048411688,-0.238442755191985,4.68218349158552,-2.34207690942313,0.533822998470441,11.0288236262241,-1.59182823134519,-2.7170162310163,10.3549253452339,-2.26211489011477,-2.83720600520017,-2.30338777729183,-1.18667479879076,1.10910520261442,23.1725905544287,-1.80447519249087,-2.67424113545459,10.4275488033586,1.56427817840967,2.39659505809287,-2.27056310926584,-1.71514483304168,13.8591649025236,-2.77064790809001,-2.21820159710109,8.62373891712395,-1.60176699021851],"name":["Var6_Var7","Var6_Var8","Var6_Var23","Var6_Var24","Var6_Var25","Var6_Var35","Var6_Var40","Var7_Var8","Var7_Var23","Var7_Var24","Var7_Var25","Var7_Var35","Var7_Var40","Var8_Var23","Var8_Var24","Var8_Var25","Var8_Var35","Var8_Var40","Var23_Var24","Var23_Var25","Var23_Var35","Var23_Var40","Var24_Var25","Var24_Var35","Var24_Var40","Var25_Var35","Var25_Var40","Var35_Var40"],"dashes":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"width":[4.15553313119895,0.788271145235064,0.378467173442404,1.85465504747566,-0.252623072826939,0.610146899541132,3.75864708786723,-0.0275484694035558,-0.365104869304889,3.55647760357016,-0.228634467034432,-0.401161801560052,-0.24101633318755,0.0939975603627705,0.782731560784325,7.40177716632861,-0.0913425577472624,-0.352272340636378,3.57826464100757,0.9192834535229,1.16897851742786,-0.231168932779753,-0.064543449912505,4.60774947075709,-0.381194372427002,-0.215460479130328,3.03712167513718,-0.030530097065554],"color":["#66A61E","#66A61E","grey","#66A61E","grey","#66A61E","#66A61E","grey","grey","#66A61E","grey","grey","grey","grey","#66A61E","#66A61E","grey","grey","#66A61E","#66A61E","#66A61E","grey","grey","#66A61E","grey","grey","#66A61E","grey"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","font":{"size":20}},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"800px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="contact-us-contribute" class="section level2">
 <h2>Contact Us / Contribute</h2>
