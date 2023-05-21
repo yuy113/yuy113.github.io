@@ -86,25 +86,83 @@ Within the `MultiModuleFind` function, we have the flexibility to set the maximu
 
 In our proposed method, which is implemented in the `wActNet` R package, we have an additional adjustable parameter called `weightratio.edge.node`. This parameter allows us to specify the weighted ratio of edge scores versus node scores in the objective function for optimizing active subnetworks.
 
-Please note when both the BioNet and wActNet R packages complete execution and fail to identify any further optimized or active subnetworks, a warning message "No positive nodes" will be generated.
+
+Please note when the function completes execution and fails to identify any further optimized or active subnetworks, a warning message "No positive nodes" will be generated.
+
 
 ```{r}
 network.test1<-network.test$Network
 node.scores<-network.test$NodeScore
 edge.scores<-network.test$EdgeScore
-#Note: both BioNet and wActNet R packages stop running and can't detect any optimized/active subnetwork further and complete, a warning output message-"No positive node" will be generated.
+
+#Note: both BioNet and wActNet R packages stop running and can't detect any optimized/active subnetwork further and complete, a warning output message-"No positive nodes" will be generated.
 #identify all possible optimized subnetworks in simulated network
 # using Dittrich's method using node scores only
 multi.mod.n<-MultiModuleFind(network.test1,node.scores,edge.scores,
 weightratio.edge.node=1,ncluster=3,method="NodeOnly")
 #all possible optimized subnetworks in simulated network using Dittrich's method using node scores only
 multi.mod.n
+#visualize the final illustrated detected optimized subnetwork by BioNet algorithm
+#for edges, edge score >=0, solid line, edge score < 0, dash line
+#for nodes, node score >=0, red color, edge score < 0, grey color 
+#the size/length of node or edges proportional to node or edge score respectively
+#need R package-visNetwork, if not, please install from CRAN
+require(visNetwork, quietly = TRUE)
+dat_node<-multi.mod.n[[1]]
+ E(dat_node)$dashes<-ifelse(E(dat_node)$score>0,FALSE,FALSE)
+  E(dat_node)$width<-(E(dat_node)$score+1.5)*0.3
+  V(dat_node)$color<-ifelse(V(dat_node)$score>0,"#E7298A","grey")
+  V(dat_node)$size<-(V(dat_node)$score+11)*0.5
+  
+  E(dat_node)$color<-ifelse(E(dat_node)$score>0,"#66A61E","grey")
+  
+  
+ #########################################################################################
+  # setwd("/Users/yubingyao/Google Drive/Network analysis/R code/")
+  
+ # save(GU2,file="network2_2clusters_plot.RData")
+  
+  
+  
+  #load("network_2clusters_plot.RData")
+  
+  data_node<- toVisNetworkData(dat_node)
+  
+  visNetwork(nodes = data_node$nodes, edges = data_node$edges, height = "800px")%>% visNodes(font=list(size=20))
 # identify all possible signaling modules in simulated network
 # using our proposed method based on node scores and edge scores
 multi.mod.e<-MultiModuleFind(network.test1,node.scores,edge.scores,
 weightratio.edge.node=1,ncluster=3,method="NodeEdge")
 #all possible optimized subnetworks in simulated network using our proposed method based on node scores and edge scores
 multi.mod.e
+
+#visualize the final illustrated detected optimized subnetwork by our proposed algorithm
+#for edges, edge score >=0, solid line, edge score < 0, dash line
+#for nodes, node score >=0, red color, edge score < 0, grey color 
+#the size/length of node or edges proportional to node or edge score respectively
+#need R package-visNetwork, if not, please install from CRAN
+#require(visNetwork, quietly = TRUE)
+dat_nodeedge<-multi.mod.e[[1]]
+ E(dat_nodeedge)$dashes<-ifelse(E(dat_nodeedge)$score>0,FALSE,FALSE)
+  E(dat_nodeedge)$width<-(E(dat_nodeedge)$score+1.5)*0.3
+  V(dat_nodeedge)$color<-ifelse(V(dat_nodeedge)$score>0,"#E7298A","grey")
+  V(dat_nodeedge)$size<-(V(dat_nodeedge)$score+11)*0.5
+  
+  E(dat_nodeedge)$color<-ifelse(E(dat_nodeedge)$score>0,"#66A61E","grey")
+  
+  
+ #########################################################################################
+  # setwd("/Users/yubingyao/Google Drive/Network analysis/R code/")
+  
+ # save(GU2,file="network2_2clusters_plot.RData")
+  
+  
+  
+  #load("network_2clusters_plot.RData")
+  
+  data_nodeedge <- toVisNetworkData(dat_nodeedge)
+  
+  visNetwork(nodes = data_nodeedge$nodes, edges = data_nodeedge$edges, height = "800px")%>% visNodes(font=list(size=20))
 ```
 
 
