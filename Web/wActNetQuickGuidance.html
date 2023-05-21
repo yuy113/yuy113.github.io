@@ -1753,9 +1753,9 @@ on network data.</p>
 <span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co">#igraph object-Network</span></span>
 <span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>network.test<span class="sc">$</span>Network</span></code></pre></div>
-<pre><code>## IGRAPH 76dc0d0 UN-- 40 780 -- 
+<pre><code>## IGRAPH 680bef2 UN-- 40 780 -- 
 ## + attr: name (v/c), score (v/n), score (e/n)
-## + edges from 76dc0d0 (vertex names):
+## + edges from 680bef2 (vertex names):
 ##  [1] Var1--Var2  Var1--Var3  Var1--Var4  Var1--Var5  Var1--Var6  Var1--Var7 
 ##  [7] Var1--Var8  Var1--Var9  Var1--Var10 Var1--Var11 Var1--Var12 Var1--Var13
 ## [13] Var1--Var14 Var1--Var15 Var1--Var16 Var1--Var17 Var1--Var18 Var1--Var19
@@ -1768,17 +1768,17 @@ on network data.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#node scores</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>network.test<span class="sc">$</span>NodeScore</span></code></pre></div>
 <pre><code>##       Var1      Var10      Var11      Var12      Var13      Var14      Var15 
-## -4.4416068 -4.2103973 -3.8104765 -2.3010842  1.1843800 -4.0211219 -4.4018421 
+## -2.7772064 -5.2623082 -5.2252052 -4.3185615 -4.7443935 -5.4954374 -5.7144811 
 ##      Var16      Var17      Var18      Var19       Var2      Var20      Var21 
-## -3.7022063 -3.4746391 -3.8147491 -0.6131121 37.6941623 -4.1760879 -4.2030738 
+## -4.4187783 -3.2965221 -5.3066988 -5.3490525 -5.7175329 -2.9011275 18.7638354 
 ##      Var22      Var23      Var24      Var25      Var26      Var27      Var28 
-## -3.4706728 -3.8136823 -4.3781649 -2.3847499 -3.8478467 -4.3898806 -2.9753625 
+## -5.3205112 -0.9722278 -4.6154713 -4.2383883 -3.1136440 -5.5801210 -3.9200245 
 ##      Var29       Var3      Var30      Var31      Var32      Var33      Var34 
-##  2.6265740  1.9644610 -4.2937837 -2.5505543 43.2543809 -3.9465864 -3.7189441 
+## -5.3015023 -2.0676583 -5.6051948 -4.2275612 -4.0167514 -3.2527779 -5.4954315 
 ##      Var35      Var36      Var37      Var38      Var39       Var4      Var40 
-## -4.2790960 -3.6133932 -4.3516840 -4.3895962  8.2296419 -4.1079058 -2.3872004 
+## -4.9644967 -4.9973829 -5.7021046 -4.8835249 -4.9055916 -3.8018725 -5.6982752 
 ##       Var5       Var6       Var7       Var8       Var9 
-## -2.1504271 -4.4011169 -1.5526039 -3.4661739 -4.2432874</code></pre>
+## -5.2340301 -4.1071551 -3.6070294 -5.7655754 -4.5618540</code></pre>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#edge scores</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#network.test$EdgeScore</span></span></code></pre></div>
 </div>
@@ -1801,25 +1801,27 @@ flexibility to set the maximum number of active subnetworks
 parameter called <code>weightratio.edge.node</code>. This parameter
 allows us to specify the weighted ratio of edge scores versus node
 scores in the objective function for optimizing active subnetworks.</p>
+<p>Please note when both the BioNet and wActNet R packages complete
+execution and fail to identify any further optimized or active
+subnetworks, a warning message “No positive nodes” will be
+generated.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>network.test1<span class="ot">&lt;-</span>network.test<span class="sc">$</span>Network</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>node.scores<span class="ot">&lt;-</span>network.test<span class="sc">$</span>NodeScore</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>edge.scores<span class="ot">&lt;-</span>network.test<span class="sc">$</span>EdgeScore</span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#identify all possible optimized subnetworks in simulated network</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># using Dittrich&#39;s method using node scores only</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>multi.mod.n<span class="ot">&lt;-</span><span class="fu">MultiModuleFind</span>(network.test1,node.scores,edge.scores,</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="at">weightratio.edge.node=</span><span class="dv">1</span>,<span class="at">ncluster=</span><span class="dv">3</span>,<span class="at">method=</span><span class="st">&quot;NodeOnly&quot;</span>)</span></code></pre></div>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Note: both BioNet and wActNet R packages stop running and can&#39;t detect any optimized/active subnetwork further and complete, a warning output message-&quot;No positive nodes&quot; will be generated.</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#identify all possible optimized subnetworks in simulated network</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># using Dittrich&#39;s method using node scores only</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>multi.mod.n<span class="ot">&lt;-</span><span class="fu">MultiModuleFind</span>(network.test1,node.scores,edge.scores,</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="at">weightratio.edge.node=</span><span class="dv">1</span>,<span class="at">ncluster=</span><span class="dv">3</span>,<span class="at">method=</span><span class="st">&quot;NodeOnly&quot;</span>)</span></code></pre></div>
 <pre><code>## Warning in runFastHeinz(network.after.cluster1, node.scores2): No positive
 ## nodes</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#all possible optimized subnetworks in simulated network using Dittrich&#39;s method using node scores only</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>multi.mod.n</span></code></pre></div>
 <pre><code>## [[1]]
-## IGRAPH 8320495 UN-- 6 15 -- 
+## IGRAPH 54c5768 UN-- 1 0 -- 
 ## + attr: name (v/c), score (v/n), score (e/n), name (e/c)
-## + edges from 8320495 (vertex names):
-##  [1] Var13--Var2  Var13--Var29 Var2 --Var29 Var13--Var3  Var2 --Var3 
-##  [6] Var29--Var3  Var13--Var32 Var2 --Var32 Var29--Var32 Var3 --Var32
-## [11] Var13--Var39 Var2 --Var39 Var29--Var39 Var3 --Var39 Var32--Var39</code></pre>
+## + edges from 54c5768 (vertex names):</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># identify all possible signaling modules in simulated network</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># using our proposed method based on node scores and edge scores</span></span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>multi.mod.e<span class="ot">&lt;-</span><span class="fu">MultiModuleFind</span>(network.test1,node.scores,edge.scores,</span>
@@ -1829,14 +1831,18 @@ scores in the objective function for optimizing active subnetworks.</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#all possible optimized subnetworks in simulated network using our proposed method based on node scores and edge scores</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>multi.mod.e</span></code></pre></div>
 <pre><code>## [[1]]
-## IGRAPH 01c20e4 UN-- 7 21 -- 
+## IGRAPH 61418fa UN-- 15 105 -- 
 ## + attr: name (v/c), score (v/n), score (e/n), name (e/c)
-## + edges from 01c20e4 (vertex names):
-##  [1] Var2 --Var3  Var2 --Var4  Var13--Var2  Var2 --Var29 Var2 --Var32
-##  [6] Var2 --Var39 Var3 --Var4  Var13--Var3  Var29--Var3  Var3 --Var32
-## [11] Var3 --Var39 Var13--Var4  Var29--Var4  Var32--Var4  Var39--Var4 
-## [16] Var13--Var29 Var13--Var32 Var13--Var39 Var29--Var32 Var29--Var39
-## [21] Var32--Var39</code></pre>
+## + edges from 61418fa (vertex names):
+##  [1] Var7 --Var4  Var4 --Var15 Var4 --Var17 Var4 --Var20 Var21--Var4 
+##  [6] Var22--Var4  Var4 --Var25 Var26--Var4  Var27--Var4  Var4 --Var30
+## [11] Var33--Var4  Var35--Var4  Var4 --Var39 Var40--Var4  Var7 --Var15
+## [16] Var7 --Var17 Var7 --Var20 Var21--Var7  Var22--Var7  Var7 --Var25
+## [21] Var7 --Var26 Var27--Var7  Var7 --Var30 Var7 --Var33 Var7 --Var35
+## [26] Var7 --Var39 Var40--Var7  Var15--Var17 Var20--Var15 Var21--Var15
+## [31] Var22--Var15 Var25--Var15 Var26--Var15 Var27--Var15 Var30--Var15
+## [36] Var33--Var15 Var35--Var15 Var39--Var15 Var40--Var15 Var20--Var17
+## + ... omitted several edges</code></pre>
 </div>
 <div id="contact-us-contribute" class="section level2">
 <h2>Contact Us / Contribute</h2>
