@@ -86,6 +86,7 @@ Within the `MultiModuleFind` function, we have the flexibility to set the maximu
 
 In our proposed method, which is implemented in the `wActNet` R package, we have an additional adjustable parameter called `weightratio.edge.node`. This parameter allows us to specify the weighted ratio of edge scores versus node scores in the objective function for optimizing active subnetworks.
 
+Please note when both the BioNet and wActNet R packages complete execution and fail to identify any further optimized or active subnetworks, a warning message "No positive nodes" will be generated.
 
 ```{r}
 network.test1<-network.test$Network
