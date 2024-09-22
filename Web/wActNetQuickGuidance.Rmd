@@ -1,6 +1,6 @@
 ---
 title: "Active subnetwork detection Quick Start"
-author: "Yubing Yao"
+author: "Yubing Yao and Rebekah Kristal"
 date: '2023-05-17'
 output: 
   rmdformats::robobook:
@@ -29,9 +29,11 @@ library(wActNet)
 #R package BioNet from BioConductor 
 library(BioNet)
 library(igraph)
-```
+#real data set from 
 
-## Simulate data and generate P values of tests on pairwise correlations
+```
+## Simulated dataset
+### Simulate data and generate P values of tests on pairwise correlations
 
 
 To illustrate the process, we simulate data ($n$ observations, $p$ features) from a multivariate normal distribution, which is then used to generate data on ${p}\choose{2}$ pairwise correlations data through the simulation of random data, which follows a multivariate normal distribution. Subsequently, we use the function `pval.perm.corr()` to conduct multiple conduct nonparametric permutation tests for all the pairwise correlations within the simulated data. Using the function and obtaining corresponding P values, we obtain the corresponding P-values from these permutation tests.
@@ -45,7 +47,7 @@ pval.edge<-pval.perm.corr(dat1,nsim=100,MatchId=NULL,do.parallel=FALSE)
 #pval.edge
 ```
 
-## Calculate node scores and edge scores 
+### Calculate node scores and edge scores 
 
 
 To illustrate our approach, we begin by simulating a network of 40 nodes. We generate P values for all nodes and potential connecting edges using the `uniform.beta.node.edge.score()` function. The output of this function is a list consisting of node scores (`NodeScore`), edge scores (`EdgeScore`), and the network data in the form of an igraph object (`Network`).
@@ -76,7 +78,7 @@ network.test$NodeScore
 ```
 
 
-## Detect optimized subnetworks 
+### Detect optimized subnetworks 
 
 
 To detect active subnetworks within our network, we illustrate the approach by Dittrich et al. in 2008 and compare to the `wActNet` algorithm. The algorithm proposed by Dittrich et al. in 2008 uses node scores only. The `wActNet` algorithm combines node scores and edge scores using the `MultiModuleFind` function. Within the `MultiModuleFind` function, we have the flexibility to set the maximum number of active subnetworks (`ncluster`) and choose between two methods: the one presented by Dittrich et al. in 2008 (method=`NodeOnly`) or the wActNet approach (method=`NodeEdge`). 
@@ -163,7 +165,158 @@ dat_nodeedge<-multi.mod.e[[1]]
   
   visNetwork(nodes = data_nodeedge$nodes, edges = data_nodeedge$edges, height = "800px")%>% visNodes(font=list(size=20))
 ```
+## Real dataset of ovarian cancer
+### Downloading and preprocessing ovarian cancer data
 
+```{R installAndLoadPackages, cache=T}
+
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+#BiocManager::install(version = "3.19")
+
+library(BiocManager)
+# Uncomment this line to install the affy and curatedOvarianData package 
+# Takes time, so re-comment after
+# BiocManager::install("affy")
+# BiocManager::install("curatedOvarianData")
+
+library(devtools)
+install_github("yuy113/wActNet", force = TRUE)
+library(igraph)
+
+library(affy)
+#library(BioNet)
+library(dplyr)
+library(stringr)
+#library(wActNet)
+library(curatedOvarianData)
+
+```
+
+
+###Load and select a subset of the ovarian cancer data.
+
+```{R loadOcData}
+standardize = function(x){return((x-mean(x))/sd(x))}
+
+data(GSE32062.GPL6480_eset)
+lateStage = exprs(GSE32062.GPL6480_eset)
+```
+
+For a straightforward example on a small set of genes, use the chunk below:
+
+```{R selectHPOGenes}
+# Extract a subset of genes related to ovarian carcinoma 
+# based on the Human Phenotype Ontology
+# See https://hpo.jax.org/app/browse/term/HP:0025318
+
+lateStageSmall = lateStage[c(1680,1681,3027,4564,8930,12243,12245,13694,13695,13701,13979,16082,16875,17980),] %>%
+  t() %>%
+  data.frame() %>%
+  apply(.,2,standardize)
+```
+Select a set of 50 genes/predictors
+```{R increasePredictorSize, eval=T}
+# select a random subset of genes to test different sizes
+setSize = 50
+set.seed(1989)
+# remove genes with weird symbols in the names as this messes up wActNet
+lateStage = lateStage[-grep("///",row.names(lateStage)),]
+geneIdx = sample(1:ncol(lateStage), size=setSize,replace=F)
+lateStageSmall = lateStage[geneIdx,] %>%
+  t() %>%
+  data.frame() %>%
+  apply(.,2,standardize)
+names(lateStageSmall) = colnames(lateStageSmall)
+head(lateStageSmall)
+```
+
+
+### Assigning edge p-values with permutation on a correlation network
+
+To generate edge p-values, we use a permutation test on a correlation network. You can vary `nsim` to make this easier to test, although in practice you'll want to use a high number. 
+
+```{R}
+edge_p_vals = pval.perm.corr(dat = lateStageSmall,MatchId = NULL,
+               nsim = 1000, do.parallel = F, no_cores = 1)
+
+
+```
+
+
+### Assigning node p-values associated with covariate
+
+To assign node p-values, we will regress the expression of each gene against summary grade.
+
+```{R}
+lateStagePheno = phenoData(GSE32062.GPL6480_eset)
+gradeInfo = data.frame("sample"=row.names(pData(lateStagePheno)),
+                       "summarygrade"=pData(lateStagePheno)$summarygrade) 
+regressionDataset = lateStageSmall %>% 
+  data.frame() %>%
+  mutate("sample"=row.names(lateStageSmall)) %>%
+  inner_join(gradeInfo,by="sample")
+
+```
+To get node weights, we regress gene expression against summary grade and take the resulting p-values. Note that we take the raw p-values and not the FDR, as the conversion to node scores in wActNet provides FDR control.
+
+```{R nodeRegressions}
+library(limma)
+design_matrix = model.matrix( ~ factor(summarygrade),data=regressionDataset)
+limma_res = regressionDataset %>% select(-c(sample,summarygrade)) %>% t() %>%
+  lmFit(object = ., design = design_matrix) %>%
+  eBayes()
+node_table = limma_res %>%
+  topTable(number = Inf) %>%
+  data.frame()  
+node_p_vals = node_table$P.Value
+names(node_p_vals) = rownames(node_table)
+```
+
+
+### Running wActNet
+
+#### Converting p-values to node scores
+
+The `uniform.beta.node.edge.score` function is provided in `wActNet` for converting the list of p-values to scores, in which a higher score corresponds to a lower p-value and vice-versa. FDR control is implemented such that negative scores correspond to p-values above the FDR threshold and positive scores correspond to p-values that are FDR-significant (i.e., at or below the FDR threshold).  
+
+```{R}
+networkPrep = uniform.beta.node.edge.score(pval.node = node_p_vals,
+                                           pval.edge = edge_p_vals,
+                                           FDR.node=0.1,
+                                           FDR.edge=0.05,
+                                           dat =data.frame(lateStageSmall) )
+
+
+lateStageSmall1<-data.frame(lateStageSmall)
+
+networkPrep$NodeScore
+node_p_vals[order(node_p_vals)]
+any(is.na(names(edge_p_vals)))
+names(node_p_vals)
+names(lateStageSmall)<-as.vector(na.omit(names(lateStageSmall)))
+```
+
+#### Running module detection
+
+The `MultiModuleFind` function is used to find active subnetworks. It is an iterative algorithm that finds the largest scoring subnetwork, then removes it from the network and repeats the process. The number of modules `ncluster` must be prespecified. The algorithm will stop before reaching `ncluster` if there are no positive nodes left in the network.
+
+```{R}
+modules = MultiModuleFind(network = networkPrep$Network,
+                          node.scores = networkPrep$NodeScore,
+                          edge.scores = networkPrep$EdgeScore,
+                          ncluster = 2,
+                          method = "NodeEdge")
+
+
+
+```
+
+Examine results:
+
+```{R}
+modules
+```
 
 ## Contact Us / Contribute
 This package is new, and any and all suggestions are welcomed. You can use GitHub to raise issues, contribute, or communicate with us about the package:
@@ -177,4 +330,3 @@ networks: an integrated exact approach. Bioinformatics 24(13), 223–231 (2008)
 
 Beisser, D., Klau, G., Dandekar, T., Müller, T., Dittrich, M.: Bionet: an r-package for the functional analysis of biological
 networks. Bioinformatics 26(8), 1129–1130 (2010)
-
