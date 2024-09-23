@@ -6909,8 +6909,6 @@ margin-left: 0 !important;
           <li><a href="#real-dataset-of-ovarian-cancer" id="toc-real-dataset-of-ovarian-cancer">Real dataset of
           ovarian cancer</a>
           <ul>
-          <li><a href="#downloading-and-preprocessing-ovarian-cancer-data" id="toc-downloading-and-preprocessing-ovarian-cancer-data">Downloading
-          and preprocessing ovarian cancer data</a></li>
           <li><a href="#assigning-edge-p-values-with-permutation-on-a-correlation-network" id="toc-assigning-edge-p-values-with-permutation-on-a-correlation-network">Assigning
           edge p-values with permutation on a correlation
           network</a></li>
@@ -7050,9 +7048,9 @@ network data in the form of an igraph object (<code>Network</code>).</p>
 <span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a></span>
 <span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a><span class="co">#igraph object-Network</span></span>
 <span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>network.test<span class="sc">$</span>Network</span></code></pre></div>
-<pre><code>## IGRAPH 486b63b UN-- 40 780 -- 
+<pre><code>## IGRAPH 5aaf9ad UN-- 40 780 -- 
 ## + attr: name (v/c), score (v/n), score (e/n)
-## + edges from 486b63b (vertex names):
+## + edges from 5aaf9ad (vertex names):
 ##  [1] Var1--Var2  Var1--Var3  Var1--Var4  Var1--Var5  Var1--Var6  Var1--Var7 
 ##  [7] Var1--Var8  Var1--Var9  Var1--Var10 Var1--Var11 Var1--Var12 Var1--Var13
 ## [13] Var1--Var14 Var1--Var15 Var1--Var16 Var1--Var17 Var1--Var18 Var1--Var19
@@ -7065,17 +7063,17 @@ network data in the form of an igraph object (<code>Network</code>).</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co">#node scores</span></span>
 <span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>network.test<span class="sc">$</span>NodeScore</span></code></pre></div>
 <pre><code>##       Var1      Var10      Var11      Var12      Var13      Var14      Var15 
-## -3.5124948 -4.1166350 -3.0411361 -3.4580519 -1.3380252 -4.1765163 -3.0487525 
+## -2.6210066 -3.3231643  0.9836927  2.7056116 -3.5833111 -3.5234621 -3.8156433 
 ##      Var16      Var17      Var18      Var19       Var2      Var20      Var21 
-## -1.7326936 -4.3659393 -3.5516810 -1.8811714 -4.3675926 -4.1994821 -4.2562114 
+## -2.8486116  6.4659504 -0.7913105 -3.6514136 -3.7137570 -2.7696761 -3.5172060 
 ##      Var22      Var23      Var24      Var25      Var26      Var27      Var28 
-## -3.6637950 -4.3340052 -2.9373328 -4.3646786 -3.6721819 16.6436647 -2.8479710 
+## -3.2655820 10.0167046 -3.6993609 -3.5626825 -3.5673423 -2.9171631  1.4825952 
 ##      Var29       Var3      Var30      Var31      Var32      Var33      Var34 
-## -2.8514692  0.7087188 -3.9004213  0.1390059 -3.6172074  2.5234590 -3.8909520 
+## -0.4823218 -3.2134944  3.1240857  7.1076979 -3.8617289 -3.1780154 -2.4896929 
 ##      Var35      Var36      Var37      Var38      Var39       Var4      Var40 
-## -2.9877319 -3.4315269 -1.0714851 -3.6569138 -3.9088738 -3.9921264 -3.7374903 
+## -3.2421587 -3.3790063 -3.6793517 -3.4871063 -3.4823809 -3.2627391 -3.2537147 
 ##       Var5       Var6       Var7       Var8       Var9 
-## 10.6587370 -3.0986428 -4.1093609 -2.7847156 -4.1668454</code></pre>
+## -3.0478176 -2.0213307 -2.3131239 -2.0754045 -2.2234018</code></pre>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co">#edge scores</span></span>
 <span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co">#network.test$EdgeScore</span></span></code></pre></div>
 </div>
@@ -7118,11 +7116,14 @@ identify any further optimized or active subnetworks, a warning message
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co">#all possible optimized subnetworks in simulated network using Dittrich&#39;s method using node scores only</span></span>
 <span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>multi.mod.n</span></code></pre></div>
 <pre><code>## [[1]]
-## IGRAPH 4873e42 UN-- 5 10 -- 
+## IGRAPH 5ab86bd UN-- 7 21 -- 
 ## + attr: name (v/c), score (v/n), score (e/n), name (e/c)
-## + edges from 4873e42 (vertex names):
-##  [1] Var27--Var3  Var27--Var31 Var3 --Var31 Var27--Var33 Var3 --Var33
-##  [6] Var31--Var33 Var27--Var5  Var3 --Var5  Var31--Var5  Var33--Var5</code></pre>
+## + edges from 5ab86bd (vertex names):
+##  [1] Var11--Var12 Var11--Var17 Var12--Var17 Var11--Var23 Var12--Var23
+##  [6] Var17--Var23 Var11--Var28 Var12--Var28 Var17--Var28 Var23--Var28
+## [11] Var11--Var30 Var12--Var30 Var17--Var30 Var23--Var30 Var28--Var30
+## [16] Var11--Var31 Var12--Var31 Var17--Var31 Var23--Var31 Var28--Var31
+## [21] Var30--Var31</code></pre>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co">#visualize the final illustrated detected optimized subnetwork by BioNet algorithm</span></span>
 <span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co">#for edges, edge score &gt;=0, solid line, edge score &lt; 0, dash line</span></span>
 <span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co">#for nodes, node score &gt;=0, red color, edge score &lt; 0, grey color </span></span>
@@ -7150,8 +7151,8 @@ identify any further optimized or active subnetworks, a warning message
 <span id="cb26-25"><a href="#cb26-25" tabindex="-1"></a>  data_node<span class="ot">&lt;-</span> <span class="fu">toVisNetworkData</span>(dat_node)</span>
 <span id="cb26-26"><a href="#cb26-26" tabindex="-1"></a>  </span>
 <span id="cb26-27"><a href="#cb26-27" tabindex="-1"></a>  <span class="fu">visNetwork</span>(<span class="at">nodes =</span> data_node<span class="sc">$</span>nodes, <span class="at">edges =</span> data_node<span class="sc">$</span>edges, <span class="at">height =</span> <span class="st">&quot;800px&quot;</span>)<span class="sc">%&gt;%</span> <span class="fu">visNodes</span>(<span class="at">font=</span><span class="fu">list</span>(<span class="at">size=</span><span class="dv">20</span>))</span></code></pre></div>
-<div id="htmlwidget-5be4de61511eea403a0e" style="width:768px;height:800px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5be4de61511eea403a0e">{"x":{"nodes":{"id":["Var27","Var3","Var31","Var33","Var5"],"score":[16.64366473560926,0.7087188284313085,0.1390059483016711,2.523458966530714,10.65873703045767],"color":["#E7298A","#E7298A","#E7298A","#E7298A","#E7298A"],"size":[13.82183236780463,5.854359414215654,5.569502974150836,6.761729483265357,10.82936851522883],"label":["Var27","Var3","Var31","Var33","Var5"]},"edges":{"from":["Var27","Var27","Var3","Var27","Var3","Var31","Var27","Var3","Var31","Var33"],"to":["Var3","Var31","Var31","Var33","Var33","Var33","Var5","Var5","Var5","Var5"],"score":[13.33674340690304,11.10301102820732,-0.2131396381736159,-3.05058958169097,-1.933013696938742,2.140392985568559,12.92599501759244,-0.6147209407288541,-2.585918787699542,12.35062979736875],"name":["Var3_Var27","Var27_Var31","Var3_Var31","Var27_Var33","Var3_Var33","Var31_Var33","Var5_Var27","Var3_Var5","Var5_Var31","Var5_Var33"],"dashes":[false,false,false,false,false,false,false,false,false,false],"width":[4.451023022070911,3.780903308462195,0.3860581085479152,-0.4651768745072911,-0.1299041090816226,1.092117895670568,4.327798505277732,0.2655837177813438,-0.3257756363098626,4.155188939210626],"color":["#66A61E","#66A61E","grey","grey","grey","#66A61E","#66A61E","grey","grey","#66A61E"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","font":{"size":20}},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"800px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-0923841f2f5b66e8feda" style="width:768px;height:800px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0923841f2f5b66e8feda">{"x":{"nodes":{"id":["Var11","Var12","Var17","Var23","Var28","Var30","Var31"],"score":[0.9836927065459334,2.705611644191563,6.465950435867914,10.01670459761831,1.48259518099601,3.124085660050605,7.107697899264836],"color":["#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A"],"size":[5.991846353272967,6.852805822095782,8.732975217933957,10.50835229880915,6.241297590498005,7.062042830025303,9.053848949632417],"label":["Var11","Var12","Var17","Var23","Var28","Var30","Var31"]},"edges":{"from":["Var11","Var11","Var12","Var11","Var12","Var17","Var11","Var12","Var17","Var23","Var11","Var12","Var17","Var23","Var28","Var11","Var12","Var17","Var23","Var28","Var30"],"to":["Var12","Var17","Var17","Var23","Var23","Var23","Var28","Var28","Var28","Var28","Var30","Var30","Var30","Var30","Var30","Var31","Var31","Var31","Var31","Var31","Var31"],"score":[-2.889023703049022,-3.150174177276814,7.687955166642939,7.37076701282126,-2.432221010823717,-3.02353061873228,0.06151795766164588,7.445228261838738,3.583123575264765,-3.119628119952023,12.92442771964381,-2.96806340139145,0.9348057329010806,-2.960301513416248,-2.980487115546175,4.069919295062341,-1.326085920480249,-2.386063826997713,-1.617779109290828,-2.964473915135545,-3.024634748328029],"name":["Var11_Var12","Var11_Var17","Var12_Var17","Var11_Var23","Var12_Var23","Var17_Var23","Var11_Var28","Var12_Var28","Var17_Var28","Var23_Var28","Var11_Var30","Var12_Var30","Var17_Var30","Var23_Var30","Var28_Var30","Var11_Var31","Var12_Var31","Var17_Var31","Var23_Var31","Var28_Var31","Var30_Var31"],"dashes":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"width":[-0.4167071109147065,-0.4950522531830443,2.756386549992882,2.661230103846378,-0.279666303247115,-0.457059185619684,0.4684553872984937,2.683568478551621,1.524937072579429,-0.4858884359856068,4.327328315893141,-0.4404190204174349,0.7304417198703241,-0.4380904540248745,-0.4441461346638526,1.670975788518702,0.05217422385592534,-0.2658191480993138,-0.03533373278724847,-0.4393421745406634,-0.4573904244984087],"color":["grey","grey","#66A61E","#66A61E","grey","grey","#66A61E","#66A61E","#66A61E","grey","#66A61E","grey","#66A61E","grey","grey","#66A61E","grey","grey","grey","grey","grey"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","font":{"size":20}},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"800px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="co"># identify all possible signaling modules in simulated network</span></span>
 <span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="co"># using our proposed method based on node scores and edge scores</span></span>
 <span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>multi.mod.e<span class="ot">&lt;-</span><span class="fu">MultiModuleFind</span>(network.test1,node.scores,edge.scores,</span>
@@ -7161,12 +7162,15 @@ identify any further optimized or active subnetworks, a warning message
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="co">#all possible optimized subnetworks in simulated network using our proposed method based on node scores and edge scores</span></span>
 <span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>multi.mod.e</span></code></pre></div>
 <pre><code>## [[1]]
-## IGRAPH 4892b38 UN-- 6 15 -- 
+## IGRAPH 5ae1179 UN-- 8 28 -- 
 ## + attr: name (v/c), score (v/n), score (e/n), name (e/c)
-## + edges from 4892b38 (vertex names):
-##  [1] Var3 --Var5  Var3 --Var26 Var27--Var3  Var3 --Var31 Var3 --Var33
-##  [6] Var5 --Var26 Var27--Var5  Var31--Var5  Var33--Var5  Var27--Var26
-## [11] Var31--Var26 Var33--Var26 Var27--Var31 Var27--Var33 Var31--Var33</code></pre>
+## + edges from 5ae1179 (vertex names):
+##  [1] Var11--Var12 Var11--Var17 Var11--Var23 Var11--Var28 Var11--Var30
+##  [6] Var11--Var31 Var11--Var38 Var12--Var17 Var12--Var23 Var12--Var28
+## [11] Var12--Var30 Var12--Var31 Var12--Var38 Var17--Var23 Var17--Var28
+## [16] Var17--Var30 Var17--Var31 Var17--Var38 Var23--Var28 Var23--Var30
+## [21] Var23--Var31 Var23--Var38 Var28--Var30 Var28--Var31 Var28--Var38
+## [26] Var30--Var31 Var30--Var38 Var31--Var38</code></pre>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="co">#visualize the final illustrated detected optimized subnetwork by our proposed algorithm</span></span>
 <span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="co">#for edges, edge score &gt;=0, solid line, edge score &lt; 0, dash line</span></span>
 <span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a><span class="co">#for nodes, node score &gt;=0, red color, edge score &lt; 0, grey color </span></span>
@@ -7194,118 +7198,75 @@ identify any further optimized or active subnetworks, a warning message
 <span id="cb31-25"><a href="#cb31-25" tabindex="-1"></a>  data_nodeedge <span class="ot">&lt;-</span> <span class="fu">toVisNetworkData</span>(dat_nodeedge)</span>
 <span id="cb31-26"><a href="#cb31-26" tabindex="-1"></a>  </span>
 <span id="cb31-27"><a href="#cb31-27" tabindex="-1"></a>  <span class="fu">visNetwork</span>(<span class="at">nodes =</span> data_nodeedge<span class="sc">$</span>nodes, <span class="at">edges =</span> data_nodeedge<span class="sc">$</span>edges, <span class="at">height =</span> <span class="st">&quot;800px&quot;</span>)<span class="sc">%&gt;%</span> <span class="fu">visNodes</span>(<span class="at">font=</span><span class="fu">list</span>(<span class="at">size=</span><span class="dv">20</span>))</span></code></pre></div>
-<div id="htmlwidget-b4e212f1f49bb6749d48" style="width:768px;height:800px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-b4e212f1f49bb6749d48">{"x":{"nodes":{"id":["Var27","Var3","Var31","Var33","Var5","Var26"],"score":[16.64366473560926,0.7087188284313085,0.1390059483016711,2.523458966530714,10.65873703045767,-3.67218185491897],"color":["#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","grey"],"size":[13.82183236780463,5.854359414215654,5.569502974150836,6.761729483265357,10.82936851522883,3.663909072540515],"label":["Var27","Var3","Var31","Var33","Var5","Var26"]},"edges":{"from":["Var3","Var3","Var27","Var3","Var3","Var5","Var27","Var31","Var33","Var27","Var31","Var33","Var27","Var27","Var31"],"to":["Var5","Var26","Var3","Var31","Var33","Var26","Var5","Var5","Var5","Var26","Var26","Var26","Var31","Var33","Var33"],"score":[-0.6147209407288541,-2.618912236933594,13.33674340690304,-0.2131396381736159,-1.933013696938742,5.470165188011231,12.92599501759244,-2.585918787699542,12.35062979736875,13.75820836348056,2.122272906950107,15.87490340455727,11.10301102820732,-3.05058958169097,2.140392985568559],"name":["Var3_Var5","Var3_Var26","Var3_Var27","Var3_Var31","Var3_Var33","Var5_Var26","Var5_Var27","Var5_Var31","Var5_Var33","Var26_Var27","Var26_Var31","Var26_Var33","Var27_Var31","Var27_Var33","Var31_Var33"],"dashes":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"width":[0.2655837177813438,-0.3356736710800781,4.451023022070911,0.3860581085479152,-0.1299041090816226,2.091049556403369,4.327798505277732,-0.3257756363098626,4.155188939210626,4.577462509044168,1.086681872085032,5.21247102136718,3.780903308462195,-0.4651768745072911,1.092117895670568],"color":["grey","grey","#66A61E","grey","grey","#66A61E","#66A61E","grey","#66A61E","#66A61E","#66A61E","#66A61E","#66A61E","grey","#66A61E"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","font":{"size":20}},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"800px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-ad3e4880efdc99e54f77" style="width:768px;height:800px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ad3e4880efdc99e54f77">{"x":{"nodes":{"id":["Var11","Var12","Var17","Var23","Var28","Var30","Var31","Var38"],"score":[0.9836927065459334,2.705611644191563,6.465950435867914,10.01670459761831,1.48259518099601,3.124085660050605,7.107697899264836,-3.487106267001228],"color":["#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","grey"],"size":[5.991846353272967,6.852805822095782,8.732975217933957,10.50835229880915,6.241297590498005,7.062042830025303,9.053848949632417,3.756446866499386],"label":["Var11","Var12","Var17","Var23","Var28","Var30","Var31","Var38"]},"edges":{"from":["Var11","Var11","Var11","Var11","Var11","Var11","Var11","Var12","Var12","Var12","Var12","Var12","Var12","Var17","Var17","Var17","Var17","Var17","Var23","Var23","Var23","Var23","Var28","Var28","Var28","Var30","Var30","Var31"],"to":["Var12","Var17","Var23","Var28","Var30","Var31","Var38","Var17","Var23","Var28","Var30","Var31","Var38","Var23","Var28","Var30","Var31","Var38","Var28","Var30","Var31","Var38","Var30","Var31","Var38","Var31","Var38","Var38"],"score":[-2.889023703049022,-3.150174177276814,7.37076701282126,0.06151795766164588,12.92442771964381,4.069919295062341,-3.092848643049635,7.687955166642939,-2.432221010823717,7.445228261838738,-2.96806340139145,-1.326085920480249,14.28955599307699,-3.02353061873228,3.583123575264765,0.9348057329010806,-2.386063826997713,13.27961492068283,-3.119628119952023,-2.960301513416248,-1.617779109290828,28.99644525734825,-2.980487115546175,-2.964473915135545,7.348669928567433,-3.024634748328029,10.3083890153772,-1.365923805901925],"name":["Var11_Var12","Var11_Var17","Var11_Var23","Var11_Var28","Var11_Var30","Var11_Var31","Var11_Var38","Var12_Var17","Var12_Var23","Var12_Var28","Var12_Var30","Var12_Var31","Var12_Var38","Var17_Var23","Var17_Var28","Var17_Var30","Var17_Var31","Var17_Var38","Var23_Var28","Var23_Var30","Var23_Var31","Var23_Var38","Var28_Var30","Var28_Var31","Var28_Var38","Var30_Var31","Var30_Var38","Var31_Var38"],"dashes":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"width":[-0.4167071109147065,-0.4950522531830443,2.661230103846378,0.4684553872984937,4.327328315893141,1.670975788518702,-0.4778545929148906,2.756386549992882,-0.279666303247115,2.683568478551621,-0.4404190204174349,0.05217422385592534,4.736866797923098,-0.457059185619684,1.524937072579429,0.7304417198703241,-0.2658191480993138,4.433884476204848,-0.4858884359856068,-0.4380904540248745,-0.03533373278724847,9.148933577204474,-0.4441461346638526,-0.4393421745406634,2.65460097857023,-0.4573904244984087,3.542516704613159,0.04022285822942238],"color":["grey","grey","#66A61E","#66A61E","#66A61E","#66A61E","grey","#66A61E","grey","#66A61E","grey","grey","#66A61E","grey","#66A61E","#66A61E","grey","#66A61E","grey","grey","grey","#66A61E","grey","grey","#66A61E","grey","#66A61E","grey"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","font":{"size":20}},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"800px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="real-dataset-of-ovarian-cancer" class="section level2">
 <h2>Real dataset of ovarian cancer</h2>
-<div id="downloading-and-preprocessing-ovarian-cancer-data" class="section level3">
-<h3>Downloading and preprocessing ovarian cancer data</h3>
+<p>This uses a set of public ovarian cancer data in the
+curatedOvarianData R package. See “??curatedOvarianData” in the RStudio
+console for more help with this dataset: “This package represents a
+manually curated data collection for gene expression meta-analysis of
+patients with ovarian cancer. This resource provides uniformly prepared
+microarray data with curated and documented clinical metadata. It allows
+a computational user to efficiently curatedOvarianData identify studies
+and patient subgroups of interest for analysis and to run such analyses
+immediately without the challenges posed by harmonizing heterogeneous
+microarray technologies, study designs, expression data processing
+methods, and clinical data formats.”</p>
+<p>Because this is full-transcriptome data, we will load the data and
+select only a subset of it. ### Downloading and preprocessing ovarian
+cancer data</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">&quot;BiocManager&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>    <span class="fu">install.packages</span>(<span class="st">&quot;BiocManager&quot;</span>)</span></code></pre></div>
-<pre><code>## Warning in file(con, &quot;r&quot;): URL &#39;https://bioconductor.org/config.yaml&#39;: status
-## was &#39;Couldn&#39;t resolve host name&#39;</code></pre>
-<pre><code>## Warning in file(con, &quot;r&quot;): URL &#39;http://bioconductor.org/config.yaml&#39;: status
-## was &#39;Couldn&#39;t resolve host name&#39;</code></pre>
-<pre><code>## Bioconductor version cannot be validated; no internet connection?  See
-##   #troubleshooting section in vignette</code></pre>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="co">#BiocManager::install(version = &quot;3.19&quot;)</span></span>
-<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a></span>
-<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a><span class="fu">library</span>(BiocManager)</span>
-<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a><span class="co"># Uncomment this line to install the affy and curatedOvarianData package </span></span>
-<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a><span class="co"># Takes time, so re-comment after</span></span>
-<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a><span class="co"># BiocManager::install(&quot;affy&quot;)</span></span>
-<span id="cb36-7"><a href="#cb36-7" tabindex="-1"></a><span class="co"># BiocManager::install(&quot;curatedOvarianData&quot;)</span></span>
-<span id="cb36-8"><a href="#cb36-8" tabindex="-1"></a></span>
-<span id="cb36-9"><a href="#cb36-9" tabindex="-1"></a><span class="fu">library</span>(devtools)</span></code></pre></div>
-<pre><code>## Loading required package: usethis</code></pre>
-<pre><code>## 
-## Attaching package: &#39;devtools&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:BiocManager&#39;:
-## 
-##     install</code></pre>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="fu">install_github</span>(<span class="st">&quot;yuy113/wActNet&quot;</span>, <span class="at">force =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## Downloading GitHub repo yuy113/wActNet@HEAD</code></pre>
-<pre><code>## Skipping 5 packages not available: doParallel, foreach, BioNet, igraph, BiocGenerics</code></pre>
-<pre><code>## ── R CMD build ─────────────────────────────────────────────────────────────────
-##          checking for file &#39;C:\Users\yubin\AppData\Local\Temp\RtmpApveju\remotes1b804d217ef1\yuy113-wActNet-bb06e7b/DESCRIPTION&#39; ...  ✔  checking for file &#39;C:\Users\yubin\AppData\Local\Temp\RtmpApveju\remotes1b804d217ef1\yuy113-wActNet-bb06e7b/DESCRIPTION&#39;
-##       ─  preparing &#39;wActNet&#39;:
-##    checking DESCRIPTION meta-information ...  ✔  checking DESCRIPTION meta-information
-##       ─  checking for LF line-endings in source and make files and shell scripts
-##   ─  checking for empty or unneeded directories
-##    Omitted &#39;LazyData&#39; from DESCRIPTION
-##       ─  building &#39;wActNet_0.1.0.tar.gz&#39;
-##      
-## </code></pre>
-<pre><code>## Warning: package &#39;wActNet&#39; is in use and will not be installed</code></pre>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
-<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a></span>
-<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a><span class="fu">library</span>(affy)</span></code></pre></div>
-<pre><code>## Loading required package: Biobase</code></pre>
-<pre><code>## Welcome to Bioconductor
-## 
-##     Vignettes contain introductory material; view with
-##     &#39;browseVignettes()&#39;. To cite Bioconductor, see
-##     &#39;citation(&quot;Biobase&quot;)&#39;, and for packages &#39;citation(&quot;pkgname&quot;)&#39;.</code></pre>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a><span class="co">#library(BioNet)</span></span>
-<span id="cb48-2"><a href="#cb48-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:Biobase&#39;:
-## 
-##     combine</code></pre>
-<pre><code>## The following objects are masked from &#39;package:igraph&#39;:
-## 
-##     as_data_frame, groups, union</code></pre>
-<pre><code>## The following object is masked from &#39;package:graph&#39;:
-## 
-##     union</code></pre>
-<pre><code>## The following objects are masked from &#39;package:BiocGenerics&#39;:
-## 
-##     combine, intersect, setdiff, union</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="fu">library</span>(stringr)</span></code></pre></div>
-<pre><code>## 
-## Attaching package: &#39;stringr&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:graph&#39;:
-## 
-##     boundary</code></pre>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a><span class="co">#library(wActNet)</span></span>
-<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a><span class="fu">library</span>(curatedOvarianData)</span></code></pre></div>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>    <span class="fu">install.packages</span>(<span class="st">&quot;BiocManager&quot;</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="co">#BiocManager::install(version = &quot;3.19&quot;)</span></span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a><span class="fu">library</span>(BiocManager)</span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a><span class="co"># Uncomment this line to install the affy and curatedOvarianData package </span></span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a><span class="co"># Takes time, so re-comment after</span></span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a><span class="co"># BiocManager::install(&quot;affy&quot;)</span></span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a><span class="co"># BiocManager::install(&quot;curatedOvarianData&quot;)</span></span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a><span class="co">#library(devtools)</span></span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a></span>
+<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a><span class="co">#install_github(&quot;yuy113/wActNet&quot;, force = TRUE)</span></span>
+<span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb32-15"><a href="#cb32-15" tabindex="-1"></a></span>
+<span id="cb32-16"><a href="#cb32-16" tabindex="-1"></a><span class="fu">library</span>(affy)</span>
+<span id="cb32-17"><a href="#cb32-17" tabindex="-1"></a><span class="co">#library(BioNet)</span></span>
+<span id="cb32-18"><a href="#cb32-18" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb32-19"><a href="#cb32-19" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb32-20"><a href="#cb32-20" tabindex="-1"></a><span class="co">#library(wActNet)</span></span>
+<span id="cb32-21"><a href="#cb32-21" tabindex="-1"></a><span class="fu">library</span>(curatedOvarianData)</span></code></pre></div>
 <p>###Load and select a subset of the ovarian cancer data.</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a>standardize <span class="ot">=</span> <span class="cf">function</span>(x){<span class="fu">return</span>((x<span class="sc">-</span><span class="fu">mean</span>(x))<span class="sc">/</span><span class="fu">sd</span>(x))}</span>
-<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a></span>
-<span id="cb60-3"><a href="#cb60-3" tabindex="-1"></a><span class="fu">data</span>(GSE32062.GPL6480_eset)</span>
-<span id="cb60-4"><a href="#cb60-4" tabindex="-1"></a>lateStage <span class="ot">=</span> <span class="fu">exprs</span>(GSE32062.GPL6480_eset)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>standardize <span class="ot">=</span> <span class="cf">function</span>(x){<span class="fu">return</span>((x<span class="sc">-</span><span class="fu">mean</span>(x))<span class="sc">/</span><span class="fu">sd</span>(x))}</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a><span class="fu">data</span>(GSE32062.GPL6480_eset)</span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>lateStage <span class="ot">=</span> <span class="fu">exprs</span>(GSE32062.GPL6480_eset)</span></code></pre></div>
 <p>For a straightforward example on a small set of genes, use the chunk
 below:</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a><span class="co"># Extract a subset of genes related to ovarian carcinoma </span></span>
-<span id="cb61-2"><a href="#cb61-2" tabindex="-1"></a><span class="co"># based on the Human Phenotype Ontology</span></span>
-<span id="cb61-3"><a href="#cb61-3" tabindex="-1"></a><span class="co"># See https://hpo.jax.org/app/browse/term/HP:0025318</span></span>
-<span id="cb61-4"><a href="#cb61-4" tabindex="-1"></a></span>
-<span id="cb61-5"><a href="#cb61-5" tabindex="-1"></a>lateStageSmall <span class="ot">=</span> lateStage[<span class="fu">c</span>(<span class="dv">1680</span>,<span class="dv">1681</span>,<span class="dv">3027</span>,<span class="dv">4564</span>,<span class="dv">8930</span>,<span class="dv">12243</span>,<span class="dv">12245</span>,<span class="dv">13694</span>,<span class="dv">13695</span>,<span class="dv">13701</span>,<span class="dv">13979</span>,<span class="dv">16082</span>,<span class="dv">16875</span>,<span class="dv">17980</span>),] <span class="sc">%&gt;%</span></span>
-<span id="cb61-6"><a href="#cb61-6" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb61-7"><a href="#cb61-7" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb61-8"><a href="#cb61-8" tabindex="-1"></a>  <span class="fu">apply</span>(.,<span class="dv">2</span>,standardize)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="co"># Extract a subset of genes related to ovarian carcinoma </span></span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a><span class="co"># based on the Human Phenotype Ontology</span></span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a><span class="co"># See https://hpo.jax.org/app/browse/term/HP:0025318</span></span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>lateStageSmall <span class="ot">=</span> lateStage[<span class="fu">c</span>(<span class="dv">1680</span>,<span class="dv">1681</span>,<span class="dv">3027</span>,<span class="dv">4564</span>,<span class="dv">8930</span>,<span class="dv">12243</span>,<span class="dv">12245</span>,<span class="dv">13694</span>,<span class="dv">13695</span>,<span class="dv">13701</span>,<span class="dv">13979</span>,<span class="dv">16082</span>,<span class="dv">16875</span>,<span class="dv">17980</span>),] <span class="sc">%&gt;%</span></span>
+<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a>  <span class="fu">apply</span>(.,<span class="dv">2</span>,standardize)</span></code></pre></div>
 <p>Select a set of 50 genes/predictors</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" tabindex="-1"></a><span class="co"># select a random subset of genes to test different sizes</span></span>
-<span id="cb62-2"><a href="#cb62-2" tabindex="-1"></a>setSize <span class="ot">=</span> <span class="dv">50</span></span>
-<span id="cb62-3"><a href="#cb62-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1989</span>)</span>
-<span id="cb62-4"><a href="#cb62-4" tabindex="-1"></a><span class="co"># remove genes with weird symbols in the names as this messes up wActNet</span></span>
-<span id="cb62-5"><a href="#cb62-5" tabindex="-1"></a>lateStage <span class="ot">=</span> lateStage[<span class="sc">-</span><span class="fu">grep</span>(<span class="st">&quot;///&quot;</span>,<span class="fu">row.names</span>(lateStage)),]</span>
-<span id="cb62-6"><a href="#cb62-6" tabindex="-1"></a>geneIdx <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(lateStage), <span class="at">size=</span>setSize,<span class="at">replace=</span>F)</span>
-<span id="cb62-7"><a href="#cb62-7" tabindex="-1"></a>lateStageSmall <span class="ot">=</span> lateStage[geneIdx,] <span class="sc">%&gt;%</span></span>
-<span id="cb62-8"><a href="#cb62-8" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb62-9"><a href="#cb62-9" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb62-10"><a href="#cb62-10" tabindex="-1"></a>  <span class="fu">apply</span>(.,<span class="dv">2</span>,standardize)</span>
-<span id="cb62-11"><a href="#cb62-11" tabindex="-1"></a><span class="fu">names</span>(lateStageSmall) <span class="ot">=</span> <span class="fu">colnames</span>(lateStageSmall)</span>
-<span id="cb62-12"><a href="#cb62-12" tabindex="-1"></a><span class="fu">head</span>(lateStageSmall)</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="co"># select a random subset of genes to test different sizes</span></span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>setSize <span class="ot">=</span> <span class="dv">50</span></span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1989</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a><span class="co"># remove genes with weird symbols in the names as this messes up wActNet</span></span>
+<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a>lateStage <span class="ot">=</span> lateStage[<span class="sc">-</span><span class="fu">grep</span>(<span class="st">&quot;///&quot;</span>,<span class="fu">row.names</span>(lateStage)),]</span>
+<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a>geneIdx <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(lateStage), <span class="at">size=</span>setSize,<span class="at">replace=</span>F)</span>
+<span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a>lateStageSmall <span class="ot">=</span> lateStage[geneIdx,] <span class="sc">%&gt;%</span></span>
+<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb35-9"><a href="#cb35-9" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb35-10"><a href="#cb35-10" tabindex="-1"></a>  <span class="fu">apply</span>(.,<span class="dv">2</span>,standardize)</span>
+<span id="cb35-11"><a href="#cb35-11" tabindex="-1"></a><span class="fu">names</span>(lateStageSmall) <span class="ot">=</span> <span class="fu">colnames</span>(lateStageSmall)</span>
+<span id="cb35-12"><a href="#cb35-12" tabindex="-1"></a><span class="fu">head</span>(lateStageSmall)</span></code></pre></div>
 <pre><code>##                ACTL8      ABCF2   ACTR3BP2       AATK      ABCG2    AADACL2
 ## GSM794865 -0.6110005 -0.5201983 -0.4941084 -0.2013267  0.3999489 -0.6751588
 ## GSM794866  0.5773869  1.1707556  0.8688812  1.7998879  1.4134654  0.9175988
@@ -7369,47 +7330,46 @@ below:</p>
 ## GSM794868 -0.5391128 -1.4204774
 ## GSM794869 -1.6979199  0.8352864
 ## GSM794870 -0.1698408  1.0136413</code></pre>
-</div>
 <div id="assigning-edge-p-values-with-permutation-on-a-correlation-network" class="section level3">
 <h3>Assigning edge p-values with permutation on a correlation
 network</h3>
 <p>To generate edge p-values, we use a permutation test on a correlation
 network. You can vary <code>nsim</code> to make this easier to test,
 although in practice you’ll want to use a high number.</p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" tabindex="-1"></a>edge_p_vals <span class="ot">=</span> <span class="fu">pval.perm.corr</span>(<span class="at">dat =</span> lateStageSmall,<span class="at">MatchId =</span> <span class="cn">NULL</span>,</span>
-<span id="cb64-2"><a href="#cb64-2" tabindex="-1"></a>               <span class="at">nsim =</span> <span class="dv">1000</span>, <span class="at">do.parallel =</span> F, <span class="at">no_cores =</span> <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a>edge_p_vals <span class="ot">=</span> <span class="fu">pval.perm.corr</span>(<span class="at">dat =</span> lateStageSmall,<span class="at">MatchId =</span> <span class="cn">NULL</span>,</span>
+<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a>               <span class="at">nsim =</span> <span class="dv">1000</span>, <span class="at">do.parallel =</span> F, <span class="at">no_cores =</span> <span class="dv">1</span>)</span></code></pre></div>
 </div>
 <div id="assigning-node-p-values-associated-with-covariate" class="section level3">
 <h3>Assigning node p-values associated with covariate</h3>
 <p>To assign node p-values, we will regress the expression of each gene
 against summary grade.</p>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a>lateStagePheno <span class="ot">=</span> <span class="fu">phenoData</span>(GSE32062.GPL6480_eset)</span>
-<span id="cb65-2"><a href="#cb65-2" tabindex="-1"></a>gradeInfo <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="st">&quot;sample&quot;</span><span class="ot">=</span><span class="fu">row.names</span>(<span class="fu">pData</span>(lateStagePheno)),</span>
-<span id="cb65-3"><a href="#cb65-3" tabindex="-1"></a>                       <span class="st">&quot;summarygrade&quot;</span><span class="ot">=</span><span class="fu">pData</span>(lateStagePheno)<span class="sc">$</span>summarygrade) </span>
-<span id="cb65-4"><a href="#cb65-4" tabindex="-1"></a>regressionDataset <span class="ot">=</span> lateStageSmall <span class="sc">%&gt;%</span> </span>
-<span id="cb65-5"><a href="#cb65-5" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb65-6"><a href="#cb65-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">&quot;sample&quot;</span><span class="ot">=</span><span class="fu">row.names</span>(lateStageSmall)) <span class="sc">%&gt;%</span></span>
-<span id="cb65-7"><a href="#cb65-7" tabindex="-1"></a>  <span class="fu">inner_join</span>(gradeInfo,<span class="at">by=</span><span class="st">&quot;sample&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a>lateStagePheno <span class="ot">=</span> <span class="fu">phenoData</span>(GSE32062.GPL6480_eset)</span>
+<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a>gradeInfo <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="st">&quot;sample&quot;</span><span class="ot">=</span><span class="fu">row.names</span>(<span class="fu">pData</span>(lateStagePheno)),</span>
+<span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a>                       <span class="st">&quot;summarygrade&quot;</span><span class="ot">=</span><span class="fu">pData</span>(lateStagePheno)<span class="sc">$</span>summarygrade) </span>
+<span id="cb38-4"><a href="#cb38-4" tabindex="-1"></a>regressionDataset <span class="ot">=</span> lateStageSmall <span class="sc">%&gt;%</span> </span>
+<span id="cb38-5"><a href="#cb38-5" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb38-6"><a href="#cb38-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">&quot;sample&quot;</span><span class="ot">=</span><span class="fu">row.names</span>(lateStageSmall)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-7"><a href="#cb38-7" tabindex="-1"></a>  <span class="fu">inner_join</span>(gradeInfo,<span class="at">by=</span><span class="st">&quot;sample&quot;</span>)</span></code></pre></div>
 <p>To get node weights, we regress gene expression against summary grade
 and take the resulting p-values. Note that we take the raw p-values and
 not the FDR, as the conversion to node scores in wActNet provides FDR
 control.</p>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" tabindex="-1"></a><span class="fu">library</span>(limma)</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">library</span>(limma)</span></code></pre></div>
 <pre><code>## 
 ## Attaching package: &#39;limma&#39;</code></pre>
 <pre><code>## The following object is masked from &#39;package:BiocGenerics&#39;:
 ## 
 ##     plotMA</code></pre>
-<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" tabindex="-1"></a>design_matrix <span class="ot">=</span> <span class="fu">model.matrix</span>( <span class="sc">~</span> <span class="fu">factor</span>(summarygrade),<span class="at">data=</span>regressionDataset)</span>
-<span id="cb69-2"><a href="#cb69-2" tabindex="-1"></a>limma_res <span class="ot">=</span> regressionDataset <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(sample,summarygrade)) <span class="sc">%&gt;%</span> <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb69-3"><a href="#cb69-3" tabindex="-1"></a>  <span class="fu">lmFit</span>(<span class="at">object =</span> ., <span class="at">design =</span> design_matrix) <span class="sc">%&gt;%</span></span>
-<span id="cb69-4"><a href="#cb69-4" tabindex="-1"></a>  <span class="fu">eBayes</span>()</span>
-<span id="cb69-5"><a href="#cb69-5" tabindex="-1"></a>node_table <span class="ot">=</span> limma_res <span class="sc">%&gt;%</span></span>
-<span id="cb69-6"><a href="#cb69-6" tabindex="-1"></a>  <span class="fu">topTable</span>(<span class="at">number =</span> <span class="cn">Inf</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb69-7"><a href="#cb69-7" tabindex="-1"></a>  <span class="fu">data.frame</span>()  </span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>design_matrix <span class="ot">=</span> <span class="fu">model.matrix</span>( <span class="sc">~</span> <span class="fu">factor</span>(summarygrade),<span class="at">data=</span>regressionDataset)</span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a>limma_res <span class="ot">=</span> regressionDataset <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(sample,summarygrade)) <span class="sc">%&gt;%</span> <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb42-3"><a href="#cb42-3" tabindex="-1"></a>  <span class="fu">lmFit</span>(<span class="at">object =</span> ., <span class="at">design =</span> design_matrix) <span class="sc">%&gt;%</span></span>
+<span id="cb42-4"><a href="#cb42-4" tabindex="-1"></a>  <span class="fu">eBayes</span>()</span>
+<span id="cb42-5"><a href="#cb42-5" tabindex="-1"></a>node_table <span class="ot">=</span> limma_res <span class="sc">%&gt;%</span></span>
+<span id="cb42-6"><a href="#cb42-6" tabindex="-1"></a>  <span class="fu">topTable</span>(<span class="at">number =</span> <span class="cn">Inf</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-7"><a href="#cb42-7" tabindex="-1"></a>  <span class="fu">data.frame</span>()  </span></code></pre></div>
 <pre><code>## Removing intercept from test coefficients</code></pre>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" tabindex="-1"></a>node_p_vals <span class="ot">=</span> node_table<span class="sc">$</span>P.Value</span>
-<span id="cb71-2"><a href="#cb71-2" tabindex="-1"></a><span class="fu">names</span>(node_p_vals) <span class="ot">=</span> <span class="fu">rownames</span>(node_table)</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a>node_p_vals <span class="ot">=</span> node_table<span class="sc">$</span>P.Value</span>
+<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a><span class="fu">names</span>(node_p_vals) <span class="ot">=</span> <span class="fu">rownames</span>(node_table)</span></code></pre></div>
 </div>
 <div id="running-wactnet" class="section level3">
 <h3>Running wActNet</h3>
@@ -7421,16 +7381,16 @@ which a higher score corresponds to a lower p-value and vice-versa. FDR
 control is implemented such that negative scores correspond to p-values
 above the FDR threshold and positive scores correspond to p-values that
 are FDR-significant (i.e., at or below the FDR threshold).</p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" tabindex="-1"></a>networkPrep <span class="ot">=</span> <span class="fu">uniform.beta.node.edge.score</span>(<span class="at">pval.node =</span> node_p_vals,</span>
-<span id="cb72-2"><a href="#cb72-2" tabindex="-1"></a>                                           <span class="at">pval.edge =</span> edge_p_vals,</span>
-<span id="cb72-3"><a href="#cb72-3" tabindex="-1"></a>                                           <span class="at">FDR.node=</span><span class="fl">0.1</span>,</span>
-<span id="cb72-4"><a href="#cb72-4" tabindex="-1"></a>                                           <span class="at">FDR.edge=</span><span class="fl">0.05</span>,</span>
-<span id="cb72-5"><a href="#cb72-5" tabindex="-1"></a>                                           <span class="at">dat =</span><span class="fu">data.frame</span>(lateStageSmall) )</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>networkPrep <span class="ot">=</span> <span class="fu">uniform.beta.node.edge.score</span>(<span class="at">pval.node =</span> node_p_vals,</span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a>                                           <span class="at">pval.edge =</span> edge_p_vals,</span>
+<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a>                                           <span class="at">FDR.node=</span><span class="fl">0.1</span>,</span>
+<span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a>                                           <span class="at">FDR.edge=</span><span class="fl">0.05</span>,</span>
+<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a>                                           <span class="at">dat =</span><span class="fu">data.frame</span>(lateStageSmall) )</span></code></pre></div>
 <pre><code>## Warning in bumOptim(x = x, starts): One or both parameters are on the limit of
 ## the defined parameter space</code></pre>
-<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" tabindex="-1"></a>lateStageSmall1<span class="ot">&lt;-</span><span class="fu">data.frame</span>(lateStageSmall)</span>
-<span id="cb74-2"><a href="#cb74-2" tabindex="-1"></a></span>
-<span id="cb74-3"><a href="#cb74-3" tabindex="-1"></a>networkPrep<span class="sc">$</span>NodeScore</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a>lateStageSmall1<span class="ot">&lt;-</span><span class="fu">data.frame</span>(lateStageSmall)</span>
+<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="#cb47-3" tabindex="-1"></a>networkPrep<span class="sc">$</span>NodeScore</span></code></pre></div>
 <pre><code>##  A1BG.AS1    A4GALT     AADAC   AADACL2     AAMDC     AASDH  AASDHPPT      AATF 
 ## -1.995794 -1.880014 -2.143795 -2.171150 -1.745144 -2.181047 -2.150994 -2.105271 
 ##      AATK     ABCA1   ABCA17P     ABCB1     ABCB4     ABCB7     ABCC1     ABCC2 
@@ -7445,7 +7405,7 @@ are FDR-significant (i.e., at or below the FDR threshold).</p>
 ## -2.168299 -2.122933 -2.135562 -2.015996 -2.052742 -2.193854 -2.078028 -2.142011 
 ##     ADAM6     ADAM8 
 ## -2.150230 -2.004423</code></pre>
-<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" tabindex="-1"></a>node_p_vals[<span class="fu">order</span>(node_p_vals)]</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a>node_p_vals[<span class="fu">order</span>(node_p_vals)]</span></code></pre></div>
 <pre><code>##      AAMDC      ACTC1      ABCA1     A4GALT      ACSS1     ACTL7B       ACCS 
 ## 0.01256401 0.01263004 0.04306795 0.04676156 0.05837514 0.08200663 0.13589549 
 ##   A1BG.AS1      ABCC1      ADAM8     ACVR1C    ABHD17B    ABCA17P      ACAD9 
@@ -7462,9 +7422,9 @@ are FDR-significant (i.e., at or below the FDR threshold).</p>
 ## 0.87871234 0.90125182 0.90609746 0.94687714 0.96399932 0.96444414 0.98024872 
 ##     ACVRL1 
 ## 0.99550416</code></pre>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">is.na</span>(<span class="fu">names</span>(edge_p_vals)))</span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">is.na</span>(<span class="fu">names</span>(edge_p_vals)))</span></code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
-<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" tabindex="-1"></a><span class="fu">names</span>(node_p_vals)</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a><span class="fu">names</span>(node_p_vals)</span></code></pre></div>
 <pre><code>##  [1] &quot;AAMDC&quot;    &quot;ACTC1&quot;    &quot;ABCA1&quot;    &quot;A4GALT&quot;   &quot;ACSS1&quot;    &quot;ACTL7B&quot;  
 ##  [7] &quot;ACCS&quot;     &quot;A1BG.AS1&quot; &quot;ABCC1&quot;    &quot;ADAM8&quot;    &quot;ACVR1C&quot;   &quot;ABHD17B&quot; 
 ## [13] &quot;ABCA17P&quot;  &quot;ACAD9&quot;    &quot;ABHD5&quot;    &quot;ACVR2B&quot;   &quot;ABLIM1&quot;   &quot;ACOT4&quot;   
@@ -7474,7 +7434,7 @@ are FDR-significant (i.e., at or below the FDR threshold).</p>
 ## [37] &quot;AASDHPPT&quot; &quot;ABCC2&quot;    &quot;ABCB1&quot;    &quot;ACTR3BP2&quot; &quot;AADACL2&quot;  &quot;ACN9&quot;    
 ## [43] &quot;AASDH&quot;    &quot;ACBD6&quot;    &quot;ABCF2&quot;    &quot;ACTN4P1&quot;  &quot;ABCG1&quot;    &quot;ABRA&quot;    
 ## [49] &quot;ABCB7&quot;    &quot;ACVRL1&quot;</code></pre>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" tabindex="-1"></a><span class="fu">names</span>(lateStageSmall)<span class="ot">&lt;-</span><span class="fu">as.vector</span>(<span class="fu">na.omit</span>(<span class="fu">names</span>(lateStageSmall)))</span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="fu">names</span>(lateStageSmall)<span class="ot">&lt;-</span><span class="fu">as.vector</span>(<span class="fu">na.omit</span>(<span class="fu">names</span>(lateStageSmall)))</span></code></pre></div>
 </div>
 <div id="running-module-detection" class="section level4">
 <h4>Running module detection</h4>
@@ -7484,18 +7444,18 @@ subnetwork, then removes it from the network and repeats the process.
 The number of modules <code>ncluster</code> must be prespecified. The
 algorithm will stop before reaching <code>ncluster</code> if there are
 no positive nodes left in the network.</p>
-<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" tabindex="-1"></a>modules <span class="ot">=</span> <span class="fu">MultiModuleFind</span>(<span class="at">network =</span> networkPrep<span class="sc">$</span>Network,</span>
-<span id="cb83-2"><a href="#cb83-2" tabindex="-1"></a>                          <span class="at">node.scores =</span> networkPrep<span class="sc">$</span>NodeScore,</span>
-<span id="cb83-3"><a href="#cb83-3" tabindex="-1"></a>                          <span class="at">edge.scores =</span> networkPrep<span class="sc">$</span>EdgeScore,</span>
-<span id="cb83-4"><a href="#cb83-4" tabindex="-1"></a>                          <span class="at">ncluster =</span> <span class="dv">2</span>,</span>
-<span id="cb83-5"><a href="#cb83-5" tabindex="-1"></a>                          <span class="at">method =</span> <span class="st">&quot;NodeEdge&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a>modules <span class="ot">=</span> <span class="fu">MultiModuleFind</span>(<span class="at">network =</span> networkPrep<span class="sc">$</span>Network,</span>
+<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a>                          <span class="at">node.scores =</span> networkPrep<span class="sc">$</span>NodeScore,</span>
+<span id="cb56-3"><a href="#cb56-3" tabindex="-1"></a>                          <span class="at">edge.scores =</span> networkPrep<span class="sc">$</span>EdgeScore,</span>
+<span id="cb56-4"><a href="#cb56-4" tabindex="-1"></a>                          <span class="at">ncluster =</span> <span class="dv">2</span>,</span>
+<span id="cb56-5"><a href="#cb56-5" tabindex="-1"></a>                          <span class="at">method =</span> <span class="st">&quot;NodeEdge&quot;</span>)</span></code></pre></div>
 <pre><code>## Warning in runFastHeinz.e(network, node.scores, edge.scores,
 ## weightratio.edge.node = weightratio.edge.node): No positive nodes</code></pre>
 <p>Examine results:</p>
-<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" tabindex="-1"></a>modules</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a>modules</span></code></pre></div>
 <pre><code>## [[1]]
-## IGRAPH 54237e9 U--- 0 0 -- 
-## + edges from 54237e9:</code></pre>
+## IGRAPH 612b8fd U--- 0 0 -- 
+## + edges from 612b8fd:</code></pre>
 </div>
 </div>
 </div>
