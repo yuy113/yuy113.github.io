@@ -1,7 +1,7 @@
 ---
 title: "Active subnetwork detection Quick Start"
 author: "Yubing Yao and Rebekah Kristal"
-date: '2023-05-17'
+date: '2024-10-09'
 output: 
   rmdformats::robobook:
     code_folding: show
@@ -24,15 +24,17 @@ Begin by installing and loading the `devtools` package. Use the install_github f
 #  install.packages("BiocManager")
 #BiocManager::install("pathview")
 #install_github("yuy113/wActNet")
-
+#BiocManager::install(c("BioNet"))
+#foreign, MASS, nlme, survival
 library(wActNet)
 #R package BioNet from BioConductor 
 library(BioNet)
 library(igraph)
-#real data set from 
+
 
 ```
 ## Simulated dataset
+
 ### Simulate data and generate P values of tests on pairwise correlations
 
 
@@ -165,7 +167,7 @@ dat_nodeedge<-multi.mod.e[[1]]
   
   visNetwork(nodes = data_nodeedge$nodes, edges = data_nodeedge$edges, height = "800px")%>% visNodes(font=list(size=20))
 ```
-## Application: dataset of ovarian cancer
+## Application on the dataset of ovarian cancer
 
 This uses a set of public ovarian cancer data in the curatedOvarianData R package. See "??curatedOvarianData" in the RStudio console for more help with this dataset: "This package represents a manually curated data collection for gene expression meta-analysis of patients with ovarian cancer. This resource provides uniformly prepared microarray data with curated and documented clinical metadata. It allows a computational user to efficiently curatedOvarianData identify studies and patient subgroups of interest for analysis and to run such analyses immediately without the challenges posed by harmonizing heterogeneous microarray technologies, study designs, expression data processing methods, and clinical data formats."
 
@@ -186,8 +188,12 @@ library(BiocManager)
 # BiocManager::install("curatedOvarianData")
 
 #library(devtools)
+
 #install_github("yuy113/wActNet", force = TRUE)
 library(igraph)
+library(tidyr)
+
+library(tidyverse)
 
 library(affy)
 #library(BioNet)
@@ -220,36 +226,39 @@ lateStageSmall = lateStage[c(1680,1681,3027,4564,8930,12243,12245,13694,13695,13
   data.frame() %>%
   apply(.,2,standardize)
 ```
-Select a set of 50 genes/predictors
+Use the code chunk below to instead randomly select a larger group of genes. Note that wActNet does not handle gene names with certain symbols, for example "///" in the ovarian cancer dataset. Additionally, underscores will not work because this symbol is used later in order to connect two node names. We provide an example workaround below:
+
 ```{R increasePredictorSize, eval=T}
 # select a random subset of genes to test different sizes
-setSize = 50
+setSize = 500
 set.seed(1989)
 # remove genes with weird symbols in the names as this messes up wActNet
-lateStage = lateStage[-grep("///",row.names(lateStage)),]
-geneIdx = sample(1:ncol(lateStage), size=setSize,replace=F)
+row.names(lateStage) <- gsub("///", "-", row.names(lateStage))
+
+geneIdx = sample(1:nrow(lateStage), size=setSize,replace=F)
 lateStageSmall = lateStage[geneIdx,] %>%
   t() %>%
   data.frame() %>%
   apply(.,2,standardize)
 names(lateStageSmall) = colnames(lateStageSmall)
-head(lateStageSmall)
+#head(lateStageSmall)
 ```
 
 
-### Assigning edge p-values with permutation on a correlation network
+### Assigning edge p-values 
 
 To generate edge p-values, we use a permutation test on a correlation network. You can vary `nsim` to make this easier to test, although in practice you'll want to use a high number. 
 
 ```{R}
-edge_p_vals = pval.perm.corr(dat = lateStageSmall,MatchId = NULL,
+edge_p_vals = wActNet::pval.perm.corr(dat = lateStageSmall,MatchId = NULL,
                nsim = 1000, do.parallel = F, no_cores = 1)
 
+#names(edge_p_vals)
 
 ```
 
 
-### Assigning node p-values associated with covariate
+### Assigning node p-values 
 
 To assign node p-values, we will regress the expression of each gene against summary grade.
 
@@ -266,6 +275,8 @@ regressionDataset = lateStageSmall %>%
 To get node weights, we regress gene expression against summary grade and take the resulting p-values. Note that we take the raw p-values and not the FDR, as the conversion to node scores in wActNet provides FDR control.
 
 ```{R nodeRegressions}
+# BiocManager::install("limma")
+
 library(limma)
 design_matrix = model.matrix( ~ factor(summarygrade),data=regressionDataset)
 limma_res = regressionDataset %>% select(-c(sample,summarygrade)) %>% t() %>%
@@ -278,7 +289,6 @@ node_p_vals = node_table$P.Value
 names(node_p_vals) = rownames(node_table)
 ```
 
-
 ### Running wActNet
 
 #### Converting p-values to node scores
@@ -286,20 +296,18 @@ names(node_p_vals) = rownames(node_table)
 The `uniform.beta.node.edge.score` function is provided in `wActNet` for converting the list of p-values to scores, in which a higher score corresponds to a lower p-value and vice-versa. FDR control is implemented such that negative scores correspond to p-values above the FDR threshold and positive scores correspond to p-values that are FDR-significant (i.e., at or below the FDR threshold).  
 
 ```{R}
-networkPrep = uniform.beta.node.edge.score(pval.node = node_p_vals,
+networkPrep = wActNet::uniform.beta.node.edge.score(pval.node = node_p_vals,
                                            pval.edge = edge_p_vals,
                                            FDR.node=0.1,
                                            FDR.edge=0.05,
                                            dat =data.frame(lateStageSmall) )
 
 
-lateStageSmall1<-data.frame(lateStageSmall)
+#lateStageSmall1<-data.frame(lateStageSmall)
 
-networkPrep$NodeScore
-node_p_vals[order(node_p_vals)]
-any(is.na(names(edge_p_vals)))
-names(node_p_vals)
-names(lateStageSmall)<-as.vector(na.omit(names(lateStageSmall)))
+hist(networkPrep$NodeScore)
+#node_p_vals[order(node_p_vals)]
+
 ```
 
 #### Running module detection
