@@ -6737,7 +6737,7 @@ HTMLWidgets.widget({
         <style type="text/css">code{white-space: pre;}</style>
     <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -6748,7 +6748,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -6906,14 +6906,17 @@ margin-left: 0 !important;
           <li><a href="#detect-optimized-subnetworks" id="toc-detect-optimized-subnetworks">Detect optimized
           subnetworks</a></li>
           </ul></li>
-          <li><a href="#real-dataset-of-ovarian-cancer" id="toc-real-dataset-of-ovarian-cancer">Real dataset of
-          ovarian cancer</a>
+          <li><a href="#application-on-the-dataset-of-ovarian-cancer" id="toc-application-on-the-dataset-of-ovarian-cancer">Application
+          on the dataset of ovarian cancer</a>
           <ul>
-          <li><a href="#assigning-edge-p-values-with-permutation-on-a-correlation-network" id="toc-assigning-edge-p-values-with-permutation-on-a-correlation-network">Assigning
-          edge p-values with permutation on a correlation
-          network</a></li>
-          <li><a href="#assigning-node-p-values-associated-with-covariate" id="toc-assigning-node-p-values-associated-with-covariate">Assigning
-          node p-values associated with covariate</a></li>
+          <li><a href="#downloading-and-preprocessing-ovarian-cancer-data" id="toc-downloading-and-preprocessing-ovarian-cancer-data">Downloading
+          and preprocessing ovarian cancer data</a></li>
+          <li><a href="#load-and-select-a-subset-of-the-ovarian-cancer-data." id="toc-load-and-select-a-subset-of-the-ovarian-cancer-data.">Load
+          and select a subset of the ovarian cancer data.</a></li>
+          <li><a href="#assigning-edge-p-values" id="toc-assigning-edge-p-values">Assigning edge
+          p-values</a></li>
+          <li><a href="#assigning-node-p-values" id="toc-assigning-node-p-values">Assigning node
+          p-values</a></li>
           <li><a href="#running-wactnet" id="toc-running-wactnet">Running wActNet</a></li>
           </ul></li>
           <li><a href="#contact-us-contribute" id="toc-contact-us-contribute">Contact Us /
@@ -6966,10 +6969,11 @@ the second one can be downloaded from <code>BioConductor</code> <a href="https:/
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#  install.packages(&quot;BiocManager&quot;)</span></span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#BiocManager::install(&quot;pathview&quot;)</span></span>
 <span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#install_github(&quot;yuy113/wActNet&quot;)</span></span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">library</span>(wActNet)</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#R package BioNet from BioConductor </span></span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="fu">library</span>(BioNet)</span></code></pre></div>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#BiocManager::install(c(&quot;BioNet&quot;))</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#foreign, MASS, nlme, survival</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">library</span>(wActNet)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#R package BioNet from BioConductor </span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">library</span>(BioNet)</span></code></pre></div>
 <pre><code>## Loading required package: graph</code></pre>
 <pre><code>## Loading required package: BiocGenerics</code></pre>
 <pre><code>## 
@@ -6983,8 +6987,8 @@ the second one can be downloaded from <code>BioConductor</code> <a href="https:/
 ##     colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
 ##     get, grep, grepl, intersect, is.unsorted, lapply, Map, mapply,
 ##     match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
-##     Position, rank, rbind, Reduce, rownames, sapply, setdiff, sort,
-##     table, tapply, union, unique, unsplit, which.max, which.min</code></pre>
+##     Position, rank, rbind, Reduce, rownames, sapply, setdiff, table,
+##     tapply, union, unique, unsplit, which.max, which.min</code></pre>
 <pre><code>## Loading required package: RBGL</code></pre>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">library</span>(igraph)</span></code></pre></div>
 <pre><code>## 
@@ -7004,7 +7008,6 @@ the second one can be downloaded from <code>BioConductor</code> <a href="https:/
 <pre><code>## The following object is masked from &#39;package:base&#39;:
 ## 
 ##     union</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co">#real data set from </span></span></code></pre></div>
 </div>
 <div id="simulated-dataset" class="section level2">
 <h2>Simulated dataset</h2>
@@ -7019,10 +7022,10 @@ normal distribution. Subsequently, we use the function
 permutation tests for all the pairwise correlations within the simulated
 data. Using the function and obtaining corresponding P values, we obtain
 the corresponding P-values from these permutation tests.</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>dat1<span class="ot">&lt;-</span><span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">4000</span>),<span class="at">ncol=</span><span class="dv">40</span>,<span class="at">nrow=</span><span class="dv">100</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">colnames</span>(dat1)<span class="ot">&lt;-</span><span class="fu">paste</span>(<span class="st">&quot;Var&quot;</span>, <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>),<span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>pval.edge<span class="ot">&lt;-</span><span class="fu">pval.perm.corr</span>(dat1,<span class="at">nsim=</span><span class="dv">100</span>,<span class="at">MatchId=</span><span class="cn">NULL</span>,<span class="at">do.parallel=</span><span class="cn">FALSE</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#pval.edge</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>dat1<span class="ot">&lt;-</span><span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">4000</span>),<span class="at">ncol=</span><span class="dv">40</span>,<span class="at">nrow=</span><span class="dv">100</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">colnames</span>(dat1)<span class="ot">&lt;-</span><span class="fu">paste</span>(<span class="st">&quot;Var&quot;</span>, <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>),<span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>pval.edge<span class="ot">&lt;-</span><span class="fu">pval.perm.corr</span>(dat1,<span class="at">nsim=</span><span class="dv">100</span>,<span class="at">MatchId=</span><span class="cn">NULL</span>,<span class="at">do.parallel=</span><span class="cn">FALSE</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#pval.edge</span></span></code></pre></div>
 </div>
 <div id="calculate-node-scores-and-edge-scores" class="section level3">
 <h3>Calculate node scores and edge scores</h3>
@@ -7032,25 +7035,25 @@ using the <code>uniform.beta.node.edge.score()</code> function. The
 output of this function is a list consisting of node scores
 (<code>NodeScore</code>), edge scores (<code>EdgeScore</code>), and the
 network data in the form of an igraph object (<code>Network</code>).</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># simulate the p values for all the possible edges in the network</span></span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>ind.pos.pval.edge<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">40</span><span class="sc">*</span><span class="dv">39</span><span class="sc">/</span><span class="dv">2</span>,<span class="dv">1</span>,<span class="fl">0.5</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>pval.edge<span class="ot">&lt;-</span>(<span class="dv">1</span><span class="sc">-</span>ind.pos.pval.edge)<span class="sc">*</span><span class="fu">runif</span>(<span class="dv">40</span><span class="sc">*</span><span class="dv">39</span><span class="sc">/</span><span class="dv">2</span>)<span class="sc">+</span>ind.pos.pval.edge<span class="sc">*</span><span class="fu">rbeta</span>(<span class="dv">40</span><span class="sc">*</span><span class="dv">39</span><span class="sc">/</span><span class="dv">2</span>,<span class="fl">0.1</span>,<span class="dv">1</span>)</span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="fu">names</span>(pval.edge)<span class="ot">&lt;-</span><span class="fu">unlist</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">39</span>,<span class="cf">function</span>(i){<span class="fu">sapply</span>((i<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="dv">40</span>, <span class="cf">function</span>(j){<span class="fu">paste</span>(<span class="fu">paste</span>(<span class="st">&quot;Var&quot;</span>,</span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="fu">as.character</span>(i),<span class="at">sep=</span><span class="st">&quot;&quot;</span>),<span class="fu">paste</span>(<span class="st">&quot;Var&quot;</span>,<span class="fu">as.character</span>(j),<span class="at">sep=</span><span class="st">&quot;&quot;</span>),<span class="at">sep=</span><span class="st">&quot;_&quot;</span>)})}))</span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co"># simulate p values for all the nodes in the network</span></span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>ind.pos.pval.node<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">40</span>,<span class="dv">1</span>,<span class="fl">0.2</span>)</span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>pval.node<span class="ot">&lt;-</span>(<span class="dv">1</span><span class="sc">-</span>ind.pos.pval.node)<span class="sc">*</span><span class="fu">runif</span>(<span class="dv">40</span>)<span class="sc">+</span>ind.pos.pval.node<span class="sc">*</span><span class="fu">rbeta</span>(<span class="dv">40</span>,<span class="fl">0.1</span>,<span class="dv">1</span>)</span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="fu">names</span>(pval.node)<span class="ot">&lt;-</span><span class="fu">paste</span>(<span class="st">&quot;Var&quot;</span>, <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>),<span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
-<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a></span>
-<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a><span class="co"># generate the node score-NodeScore, edge scores-EdgeScore and igraph object-Network</span></span>
-<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a>network.test<span class="ot">&lt;-</span><span class="fu">uniform.beta.node.edge.score</span>(pval.node,pval.edge,<span class="fl">0.05</span>,<span class="fl">0.05</span>,dat1)</span>
-<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a></span>
-<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a><span class="co">#igraph object-Network</span></span>
-<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>network.test<span class="sc">$</span>Network</span></code></pre></div>
-<pre><code>## IGRAPH 5aaf9ad UN-- 40 780 -- 
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># simulate the p values for all the possible edges in the network</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>ind.pos.pval.edge<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">40</span><span class="sc">*</span><span class="dv">39</span><span class="sc">/</span><span class="dv">2</span>,<span class="dv">1</span>,<span class="fl">0.5</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>pval.edge<span class="ot">&lt;-</span>(<span class="dv">1</span><span class="sc">-</span>ind.pos.pval.edge)<span class="sc">*</span><span class="fu">runif</span>(<span class="dv">40</span><span class="sc">*</span><span class="dv">39</span><span class="sc">/</span><span class="dv">2</span>)<span class="sc">+</span>ind.pos.pval.edge<span class="sc">*</span><span class="fu">rbeta</span>(<span class="dv">40</span><span class="sc">*</span><span class="dv">39</span><span class="sc">/</span><span class="dv">2</span>,<span class="fl">0.1</span>,<span class="dv">1</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="fu">names</span>(pval.edge)<span class="ot">&lt;-</span><span class="fu">unlist</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">39</span>,<span class="cf">function</span>(i){<span class="fu">sapply</span>((i<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span><span class="dv">40</span>, <span class="cf">function</span>(j){<span class="fu">paste</span>(<span class="fu">paste</span>(<span class="st">&quot;Var&quot;</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="fu">as.character</span>(i),<span class="at">sep=</span><span class="st">&quot;&quot;</span>),<span class="fu">paste</span>(<span class="st">&quot;Var&quot;</span>,<span class="fu">as.character</span>(j),<span class="at">sep=</span><span class="st">&quot;&quot;</span>),<span class="at">sep=</span><span class="st">&quot;_&quot;</span>)})}))</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co"># simulate p values for all the nodes in the network</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>ind.pos.pval.node<span class="ot">&lt;-</span><span class="fu">rbinom</span>(<span class="dv">40</span>,<span class="dv">1</span>,<span class="fl">0.2</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>pval.node<span class="ot">&lt;-</span>(<span class="dv">1</span><span class="sc">-</span>ind.pos.pval.node)<span class="sc">*</span><span class="fu">runif</span>(<span class="dv">40</span>)<span class="sc">+</span>ind.pos.pval.node<span class="sc">*</span><span class="fu">rbeta</span>(<span class="dv">40</span>,<span class="fl">0.1</span>,<span class="dv">1</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="fu">names</span>(pval.node)<span class="ot">&lt;-</span><span class="fu">paste</span>(<span class="st">&quot;Var&quot;</span>, <span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>),<span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co"># generate the node score-NodeScore, edge scores-EdgeScore and igraph object-Network</span></span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a>network.test<span class="ot">&lt;-</span><span class="fu">uniform.beta.node.edge.score</span>(pval.node,pval.edge,<span class="fl">0.05</span>,<span class="fl">0.05</span>,dat1)</span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co">#igraph object-Network</span></span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a>network.test<span class="sc">$</span>Network</span></code></pre></div>
+<pre><code>## IGRAPH 04b1ab9 UN-- 40 780 -- 
 ## + attr: name (v/c), score (v/n), score (e/n)
-## + edges from 5aaf9ad (vertex names):
+## + edges from 04b1ab9 (vertex names):
 ##  [1] Var1--Var2  Var1--Var3  Var1--Var4  Var1--Var5  Var1--Var6  Var1--Var7 
 ##  [7] Var1--Var8  Var1--Var9  Var1--Var10 Var1--Var11 Var1--Var12 Var1--Var13
 ## [13] Var1--Var14 Var1--Var15 Var1--Var16 Var1--Var17 Var1--Var18 Var1--Var19
@@ -7060,22 +7063,22 @@ network data in the form of an igraph object (<code>Network</code>).</p>
 ## [37] Var1--Var38 Var1--Var39 Var1--Var40 Var2--Var3  Var2--Var4  Var2--Var5 
 ## [43] Var2--Var6  Var2--Var7  Var2--Var8  Var2--Var9 
 ## + ... omitted several edges</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co">#node scores</span></span>
-<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>network.test<span class="sc">$</span>NodeScore</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co">#node scores</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>network.test<span class="sc">$</span>NodeScore</span></code></pre></div>
 <pre><code>##       Var1      Var10      Var11      Var12      Var13      Var14      Var15 
-## -2.6210066 -3.3231643  0.9836927  2.7056116 -3.5833111 -3.5234621 -3.8156433 
+## -4.1879001 -4.3236292 -3.2725346 -4.6238128 -4.5310106 -4.6375046 -4.4243157 
 ##      Var16      Var17      Var18      Var19       Var2      Var20      Var21 
-## -2.8486116  6.4659504 -0.7913105 -3.6514136 -3.7137570 -2.7696761 -3.5172060 
+## -1.8870475 -4.4515700 -4.6718926  0.3768563 -3.2015993 -4.1037733 -3.9843669 
 ##      Var22      Var23      Var24      Var25      Var26      Var27      Var28 
-## -3.2655820 10.0167046 -3.6993609 -3.5626825 -3.5673423 -2.9171631  1.4825952 
+## -4.4479270 -2.5577651 -4.2591585 -3.5928160 -4.4904628 -3.3443021 -3.7972994 
 ##      Var29       Var3      Var30      Var31      Var32      Var33      Var34 
-## -0.4823218 -3.2134944  3.1240857  7.1076979 -3.8617289 -3.1780154 -2.4896929 
+## -4.5501632  7.8929389 -4.0587143 -4.6140075 -4.3179114 -1.7236352  0.3277310 
 ##      Var35      Var36      Var37      Var38      Var39       Var4      Var40 
-## -3.2421587 -3.3790063 -3.6793517 -3.4871063 -3.4823809 -3.2627391 -3.2537147 
+## -3.9201161 -3.4024939 -4.1606877 -3.7461436 -2.6951865 -4.4261364 -3.2404663 
 ##       Var5       Var6       Var7       Var8       Var9 
-## -3.0478176 -2.0213307 -2.3131239 -2.0754045 -2.2234018</code></pre>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co">#edge scores</span></span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co">#network.test$EdgeScore</span></span></code></pre></div>
+## -3.5698017 -3.1963413 -2.6230899 -4.4440673 -4.2996213</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co">#edge scores</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="co">#network.test$EdgeScore</span></span></code></pre></div>
 </div>
 <div id="detect-optimized-subnetworks" class="section level3">
 <h3>Detect optimized subnetworks</h3>
@@ -7102,108 +7105,121 @@ subnetworks on network data.</p>
 <p>Please note when the function completes execution and fails to
 identify any further optimized or active subnetworks, a warning message
 “No positive nodes” will be generated.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>network.test1<span class="ot">&lt;-</span>network.test<span class="sc">$</span>Network</span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>node.scores<span class="ot">&lt;-</span>network.test<span class="sc">$</span>NodeScore</span>
-<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>edge.scores<span class="ot">&lt;-</span>network.test<span class="sc">$</span>EdgeScore</span>
-<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="co">#Note: both BioNet and wActNet R packages stop running and can&#39;t detect any optimized/active subnetwork further and complete, a warning output message-&quot;No positive nodes&quot; will be generated.</span></span>
-<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a><span class="co">#identify all possible optimized subnetworks in simulated network</span></span>
-<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a><span class="co"># using Dittrich&#39;s method using node scores only</span></span>
-<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>multi.mod.n<span class="ot">&lt;-</span><span class="fu">MultiModuleFind</span>(network.test1,node.scores,edge.scores,</span>
-<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a><span class="at">weightratio.edge.node=</span><span class="dv">1</span>,<span class="at">ncluster=</span><span class="dv">3</span>,<span class="at">method=</span><span class="st">&quot;NodeOnly&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>network.test1<span class="ot">&lt;-</span>network.test<span class="sc">$</span>Network</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>node.scores<span class="ot">&lt;-</span>network.test<span class="sc">$</span>NodeScore</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>edge.scores<span class="ot">&lt;-</span>network.test<span class="sc">$</span>EdgeScore</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="co">#Note: both BioNet and wActNet R packages stop running and can&#39;t detect any optimized/active subnetwork further and complete, a warning output message-&quot;No positive nodes&quot; will be generated.</span></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a><span class="co">#identify all possible optimized subnetworks in simulated network</span></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="co"># using Dittrich&#39;s method using node scores only</span></span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a>multi.mod.n<span class="ot">&lt;-</span><span class="fu">MultiModuleFind</span>(network.test1,node.scores,edge.scores,</span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a><span class="at">weightratio.edge.node=</span><span class="dv">1</span>,<span class="at">ncluster=</span><span class="dv">3</span>,<span class="at">method=</span><span class="st">&quot;NodeOnly&quot;</span>)</span></code></pre></div>
 <pre><code>## Warning in runFastHeinz(network.after.cluster1, node.scores2): No positive
 ## nodes</code></pre>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co">#all possible optimized subnetworks in simulated network using Dittrich&#39;s method using node scores only</span></span>
-<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>multi.mod.n</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co">#all possible optimized subnetworks in simulated network using Dittrich&#39;s method using node scores only</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>multi.mod.n</span></code></pre></div>
 <pre><code>## [[1]]
-## IGRAPH 5ab86bd UN-- 7 21 -- 
+## IGRAPH 04c2b3d UN-- 3 3 -- 
 ## + attr: name (v/c), score (v/n), score (e/n), name (e/c)
-## + edges from 5ab86bd (vertex names):
-##  [1] Var11--Var12 Var11--Var17 Var12--Var17 Var11--Var23 Var12--Var23
-##  [6] Var17--Var23 Var11--Var28 Var12--Var28 Var17--Var28 Var23--Var28
-## [11] Var11--Var30 Var12--Var30 Var17--Var30 Var23--Var30 Var28--Var30
-## [16] Var11--Var31 Var12--Var31 Var17--Var31 Var23--Var31 Var28--Var31
-## [21] Var30--Var31</code></pre>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co">#visualize the final illustrated detected optimized subnetwork by BioNet algorithm</span></span>
-<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co">#for edges, edge score &gt;=0, solid line, edge score &lt; 0, dash line</span></span>
-<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co">#for nodes, node score &gt;=0, red color, edge score &lt; 0, grey color </span></span>
-<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="co">#the size/length of node or edges proportional to node or edge score respectively</span></span>
-<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co">#need R package-visNetwork, if not, please install from CRAN</span></span>
-<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="fu">require</span>(visNetwork, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a>dat_node<span class="ot">&lt;-</span>multi.mod.n[[<span class="dv">1</span>]]</span>
-<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a> <span class="fu">E</span>(dat_node)<span class="sc">$</span>dashes<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">E</span>(dat_node)<span class="sc">$</span>score<span class="sc">&gt;</span><span class="dv">0</span>,<span class="cn">FALSE</span>,<span class="cn">FALSE</span>)</span>
-<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>  <span class="fu">E</span>(dat_node)<span class="sc">$</span>width<span class="ot">&lt;-</span>(<span class="fu">E</span>(dat_node)<span class="sc">$</span>score<span class="fl">+1.5</span>)<span class="sc">*</span><span class="fl">0.3</span></span>
-<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a>  <span class="fu">V</span>(dat_node)<span class="sc">$</span>color<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">V</span>(dat_node)<span class="sc">$</span>score<span class="sc">&gt;</span><span class="dv">0</span>,<span class="st">&quot;#E7298A&quot;</span>,<span class="st">&quot;grey&quot;</span>)</span>
-<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>  <span class="fu">V</span>(dat_node)<span class="sc">$</span>size<span class="ot">&lt;-</span>(<span class="fu">V</span>(dat_node)<span class="sc">$</span>score<span class="sc">+</span><span class="dv">11</span>)<span class="sc">*</span><span class="fl">0.5</span></span>
-<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>  </span>
-<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>  <span class="fu">E</span>(dat_node)<span class="sc">$</span>color<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">E</span>(dat_node)<span class="sc">$</span>score<span class="sc">&gt;</span><span class="dv">0</span>,<span class="st">&quot;#66A61E&quot;</span>,<span class="st">&quot;grey&quot;</span>)</span>
-<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>  </span>
-<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a>  </span>
-<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a> <span class="do">#########################################################################################</span></span>
-<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a>  <span class="co"># setwd(&quot;/Users/yubingyao/Google Drive/Network analysis/R code/&quot;)</span></span>
-<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a>  </span>
-<span id="cb26-19"><a href="#cb26-19" tabindex="-1"></a> <span class="co"># save(GU2,file=&quot;network2_2clusters_plot.RData&quot;)</span></span>
-<span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a>  </span>
-<span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a>  </span>
-<span id="cb26-22"><a href="#cb26-22" tabindex="-1"></a>  </span>
-<span id="cb26-23"><a href="#cb26-23" tabindex="-1"></a>  <span class="co">#load(&quot;network_2clusters_plot.RData&quot;)</span></span>
-<span id="cb26-24"><a href="#cb26-24" tabindex="-1"></a>  </span>
-<span id="cb26-25"><a href="#cb26-25" tabindex="-1"></a>  data_node<span class="ot">&lt;-</span> <span class="fu">toVisNetworkData</span>(dat_node)</span>
-<span id="cb26-26"><a href="#cb26-26" tabindex="-1"></a>  </span>
-<span id="cb26-27"><a href="#cb26-27" tabindex="-1"></a>  <span class="fu">visNetwork</span>(<span class="at">nodes =</span> data_node<span class="sc">$</span>nodes, <span class="at">edges =</span> data_node<span class="sc">$</span>edges, <span class="at">height =</span> <span class="st">&quot;800px&quot;</span>)<span class="sc">%&gt;%</span> <span class="fu">visNodes</span>(<span class="at">font=</span><span class="fu">list</span>(<span class="at">size=</span><span class="dv">20</span>))</span></code></pre></div>
-<div id="htmlwidget-0923841f2f5b66e8feda" style="width:768px;height:800px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0923841f2f5b66e8feda">{"x":{"nodes":{"id":["Var11","Var12","Var17","Var23","Var28","Var30","Var31"],"score":[0.9836927065459334,2.705611644191563,6.465950435867914,10.01670459761831,1.48259518099601,3.124085660050605,7.107697899264836],"color":["#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A"],"size":[5.991846353272967,6.852805822095782,8.732975217933957,10.50835229880915,6.241297590498005,7.062042830025303,9.053848949632417],"label":["Var11","Var12","Var17","Var23","Var28","Var30","Var31"]},"edges":{"from":["Var11","Var11","Var12","Var11","Var12","Var17","Var11","Var12","Var17","Var23","Var11","Var12","Var17","Var23","Var28","Var11","Var12","Var17","Var23","Var28","Var30"],"to":["Var12","Var17","Var17","Var23","Var23","Var23","Var28","Var28","Var28","Var28","Var30","Var30","Var30","Var30","Var30","Var31","Var31","Var31","Var31","Var31","Var31"],"score":[-2.889023703049022,-3.150174177276814,7.687955166642939,7.37076701282126,-2.432221010823717,-3.02353061873228,0.06151795766164588,7.445228261838738,3.583123575264765,-3.119628119952023,12.92442771964381,-2.96806340139145,0.9348057329010806,-2.960301513416248,-2.980487115546175,4.069919295062341,-1.326085920480249,-2.386063826997713,-1.617779109290828,-2.964473915135545,-3.024634748328029],"name":["Var11_Var12","Var11_Var17","Var12_Var17","Var11_Var23","Var12_Var23","Var17_Var23","Var11_Var28","Var12_Var28","Var17_Var28","Var23_Var28","Var11_Var30","Var12_Var30","Var17_Var30","Var23_Var30","Var28_Var30","Var11_Var31","Var12_Var31","Var17_Var31","Var23_Var31","Var28_Var31","Var30_Var31"],"dashes":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"width":[-0.4167071109147065,-0.4950522531830443,2.756386549992882,2.661230103846378,-0.279666303247115,-0.457059185619684,0.4684553872984937,2.683568478551621,1.524937072579429,-0.4858884359856068,4.327328315893141,-0.4404190204174349,0.7304417198703241,-0.4380904540248745,-0.4441461346638526,1.670975788518702,0.05217422385592534,-0.2658191480993138,-0.03533373278724847,-0.4393421745406634,-0.4573904244984087],"color":["grey","grey","#66A61E","#66A61E","grey","grey","#66A61E","#66A61E","#66A61E","grey","#66A61E","grey","#66A61E","grey","grey","#66A61E","grey","grey","grey","grey","grey"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","font":{"size":20}},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"800px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="co"># identify all possible signaling modules in simulated network</span></span>
-<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="co"># using our proposed method based on node scores and edge scores</span></span>
-<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>multi.mod.e<span class="ot">&lt;-</span><span class="fu">MultiModuleFind</span>(network.test1,node.scores,edge.scores,</span>
-<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a><span class="at">weightratio.edge.node=</span><span class="dv">1</span>,<span class="at">ncluster=</span><span class="dv">3</span>,<span class="at">method=</span><span class="st">&quot;NodeEdge&quot;</span>)</span></code></pre></div>
+## + edges from 04c2b3d (vertex names):
+## [1] Var19--Var3  Var19--Var34 Var3 --Var34</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="co">#visualize the final illustrated detected optimized subnetwork by BioNet algorithm</span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="co">#for edges, edge score &gt;=0, solid line, edge score &lt; 0, dash line</span></span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a><span class="co">#for nodes, node score &gt;=0, red color, edge score &lt; 0, grey color </span></span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a><span class="co">#the size/length of node or edges proportional to node or edge score respectively</span></span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a><span class="co">#need R package-visNetwork, if not, please install from CRAN</span></span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a><span class="fu">require</span>(visNetwork, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>dat_node<span class="ot">&lt;-</span>multi.mod.n[[<span class="dv">1</span>]]</span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a> <span class="fu">E</span>(dat_node)<span class="sc">$</span>dashes<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">E</span>(dat_node)<span class="sc">$</span>score<span class="sc">&gt;</span><span class="dv">0</span>,<span class="cn">FALSE</span>,<span class="cn">FALSE</span>)</span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a>  <span class="fu">E</span>(dat_node)<span class="sc">$</span>width<span class="ot">&lt;-</span>(<span class="fu">E</span>(dat_node)<span class="sc">$</span>score<span class="fl">+1.5</span>)<span class="sc">*</span><span class="fl">0.3</span></span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a>  <span class="fu">V</span>(dat_node)<span class="sc">$</span>color<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">V</span>(dat_node)<span class="sc">$</span>score<span class="sc">&gt;</span><span class="dv">0</span>,<span class="st">&quot;#E7298A&quot;</span>,<span class="st">&quot;grey&quot;</span>)</span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a>  <span class="fu">V</span>(dat_node)<span class="sc">$</span>size<span class="ot">&lt;-</span>(<span class="fu">V</span>(dat_node)<span class="sc">$</span>score<span class="sc">+</span><span class="dv">11</span>)<span class="sc">*</span><span class="fl">0.5</span></span>
+<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a>  </span>
+<span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a>  <span class="fu">E</span>(dat_node)<span class="sc">$</span>color<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">E</span>(dat_node)<span class="sc">$</span>score<span class="sc">&gt;</span><span class="dv">0</span>,<span class="st">&quot;#66A61E&quot;</span>,<span class="st">&quot;grey&quot;</span>)</span>
+<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a>  </span>
+<span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a>  </span>
+<span id="cb25-16"><a href="#cb25-16" tabindex="-1"></a> <span class="do">#########################################################################################</span></span>
+<span id="cb25-17"><a href="#cb25-17" tabindex="-1"></a>  <span class="co"># setwd(&quot;/Users/yubingyao/Google Drive/Network analysis/R code/&quot;)</span></span>
+<span id="cb25-18"><a href="#cb25-18" tabindex="-1"></a>  </span>
+<span id="cb25-19"><a href="#cb25-19" tabindex="-1"></a> <span class="co"># save(GU2,file=&quot;network2_2clusters_plot.RData&quot;)</span></span>
+<span id="cb25-20"><a href="#cb25-20" tabindex="-1"></a>  </span>
+<span id="cb25-21"><a href="#cb25-21" tabindex="-1"></a>  </span>
+<span id="cb25-22"><a href="#cb25-22" tabindex="-1"></a>  </span>
+<span id="cb25-23"><a href="#cb25-23" tabindex="-1"></a>  <span class="co">#load(&quot;network_2clusters_plot.RData&quot;)</span></span>
+<span id="cb25-24"><a href="#cb25-24" tabindex="-1"></a>  </span>
+<span id="cb25-25"><a href="#cb25-25" tabindex="-1"></a>  data_node<span class="ot">&lt;-</span> <span class="fu">toVisNetworkData</span>(dat_node)</span>
+<span id="cb25-26"><a href="#cb25-26" tabindex="-1"></a>  </span>
+<span id="cb25-27"><a href="#cb25-27" tabindex="-1"></a>  <span class="fu">visNetwork</span>(<span class="at">nodes =</span> data_node<span class="sc">$</span>nodes, <span class="at">edges =</span> data_node<span class="sc">$</span>edges, <span class="at">height =</span> <span class="st">&quot;800px&quot;</span>)<span class="sc">%&gt;%</span> <span class="fu">visNodes</span>(<span class="at">font=</span><span class="fu">list</span>(<span class="at">size=</span><span class="dv">20</span>))</span></code></pre></div>
+<div id="htmlwidget-6120423a074e7e95d5c9" style="width:768px;height:800px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6120423a074e7e95d5c9">{"x":{"nodes":{"id":["Var19","Var3","Var34"],"score":[0.3768562881885642,7.892938917945073,0.3277310238574841],"color":["#E7298A","#E7298A","#E7298A"],"size":[5.688428144094282,9.446469458972537,5.663865511928742],"label":["Var19","Var3","Var34"]},"edges":{"from":["Var19","Var19","Var3"],"to":["Var3","Var34","Var34"],"score":[-2.190467011209418,10.05719500197415,-3.034839721089751],"name":["Var3_Var19","Var19_Var34","Var3_Var34"],"dashes":[false,false,false],"width":[-0.2071401033628255,3.467158500592246,-0.4604519163269254],"color":["grey","#66A61E","grey"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","font":{"size":20}},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"800px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># identify all possible signaling modules in simulated network</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co"># using our proposed method based on node scores and edge scores</span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>multi.mod.e<span class="ot">&lt;-</span><span class="fu">MultiModuleFind</span>(network.test1,node.scores,edge.scores,</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="at">weightratio.edge.node=</span><span class="dv">1</span>,<span class="at">ncluster=</span><span class="dv">3</span>,<span class="at">method=</span><span class="st">&quot;NodeEdge&quot;</span>)</span></code></pre></div>
 <pre><code>## Warning in runFastHeinz.e(network.after.cluster1, node.scores2, edge.scores2, :
 ## No positive nodes</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="co">#all possible optimized subnetworks in simulated network using our proposed method based on node scores and edge scores</span></span>
-<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>multi.mod.e</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co">#all possible optimized subnetworks in simulated network using our proposed method based on node scores and edge scores</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>multi.mod.e</span></code></pre></div>
 <pre><code>## [[1]]
-## IGRAPH 5ae1179 UN-- 8 28 -- 
+## IGRAPH 04f1d05 UN-- 13 78 -- 
 ## + attr: name (v/c), score (v/n), score (e/n), name (e/c)
-## + edges from 5ae1179 (vertex names):
-##  [1] Var11--Var12 Var11--Var17 Var11--Var23 Var11--Var28 Var11--Var30
-##  [6] Var11--Var31 Var11--Var38 Var12--Var17 Var12--Var23 Var12--Var28
-## [11] Var12--Var30 Var12--Var31 Var12--Var38 Var17--Var23 Var17--Var28
-## [16] Var17--Var30 Var17--Var31 Var17--Var38 Var23--Var28 Var23--Var30
-## [21] Var23--Var31 Var23--Var38 Var28--Var30 Var28--Var31 Var28--Var38
-## [26] Var30--Var31 Var30--Var38 Var31--Var38</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="co">#visualize the final illustrated detected optimized subnetwork by our proposed algorithm</span></span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="co">#for edges, edge score &gt;=0, solid line, edge score &lt; 0, dash line</span></span>
-<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a><span class="co">#for nodes, node score &gt;=0, red color, edge score &lt; 0, grey color </span></span>
-<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="co">#the size/length of node or edges proportional to node or edge score respectively</span></span>
-<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a><span class="co">#need R package-visNetwork, if not, please install from CRAN</span></span>
-<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a><span class="co">#require(visNetwork, quietly = TRUE)</span></span>
-<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>dat_nodeedge<span class="ot">&lt;-</span>multi.mod.e[[<span class="dv">1</span>]]</span>
-<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a> <span class="fu">E</span>(dat_nodeedge)<span class="sc">$</span>dashes<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">E</span>(dat_nodeedge)<span class="sc">$</span>score<span class="sc">&gt;</span><span class="dv">0</span>,<span class="cn">FALSE</span>,<span class="cn">FALSE</span>)</span>
-<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a>  <span class="fu">E</span>(dat_nodeedge)<span class="sc">$</span>width<span class="ot">&lt;-</span>(<span class="fu">E</span>(dat_nodeedge)<span class="sc">$</span>score<span class="fl">+1.5</span>)<span class="sc">*</span><span class="fl">0.3</span></span>
-<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>  <span class="fu">V</span>(dat_nodeedge)<span class="sc">$</span>color<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">V</span>(dat_nodeedge)<span class="sc">$</span>score<span class="sc">&gt;</span><span class="dv">0</span>,<span class="st">&quot;#E7298A&quot;</span>,<span class="st">&quot;grey&quot;</span>)</span>
-<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a>  <span class="fu">V</span>(dat_nodeedge)<span class="sc">$</span>size<span class="ot">&lt;-</span>(<span class="fu">V</span>(dat_nodeedge)<span class="sc">$</span>score<span class="sc">+</span><span class="dv">11</span>)<span class="sc">*</span><span class="fl">0.5</span></span>
-<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a>  </span>
-<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a>  <span class="fu">E</span>(dat_nodeedge)<span class="sc">$</span>color<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">E</span>(dat_nodeedge)<span class="sc">$</span>score<span class="sc">&gt;</span><span class="dv">0</span>,<span class="st">&quot;#66A61E&quot;</span>,<span class="st">&quot;grey&quot;</span>)</span>
-<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a>  </span>
-<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a>  </span>
-<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a> <span class="do">#########################################################################################</span></span>
-<span id="cb31-17"><a href="#cb31-17" tabindex="-1"></a>  <span class="co"># setwd(&quot;/Users/yubingyao/Google Drive/Network analysis/R code/&quot;)</span></span>
-<span id="cb31-18"><a href="#cb31-18" tabindex="-1"></a>  </span>
-<span id="cb31-19"><a href="#cb31-19" tabindex="-1"></a> <span class="co"># save(GU2,file=&quot;network2_2clusters_plot.RData&quot;)</span></span>
-<span id="cb31-20"><a href="#cb31-20" tabindex="-1"></a>  </span>
-<span id="cb31-21"><a href="#cb31-21" tabindex="-1"></a>  </span>
-<span id="cb31-22"><a href="#cb31-22" tabindex="-1"></a>  </span>
-<span id="cb31-23"><a href="#cb31-23" tabindex="-1"></a>  <span class="co">#load(&quot;network_2clusters_plot.RData&quot;)</span></span>
-<span id="cb31-24"><a href="#cb31-24" tabindex="-1"></a>  </span>
-<span id="cb31-25"><a href="#cb31-25" tabindex="-1"></a>  data_nodeedge <span class="ot">&lt;-</span> <span class="fu">toVisNetworkData</span>(dat_nodeedge)</span>
-<span id="cb31-26"><a href="#cb31-26" tabindex="-1"></a>  </span>
-<span id="cb31-27"><a href="#cb31-27" tabindex="-1"></a>  <span class="fu">visNetwork</span>(<span class="at">nodes =</span> data_nodeedge<span class="sc">$</span>nodes, <span class="at">edges =</span> data_nodeedge<span class="sc">$</span>edges, <span class="at">height =</span> <span class="st">&quot;800px&quot;</span>)<span class="sc">%&gt;%</span> <span class="fu">visNodes</span>(<span class="at">font=</span><span class="fu">list</span>(<span class="at">size=</span><span class="dv">20</span>))</span></code></pre></div>
-<div id="htmlwidget-ad3e4880efdc99e54f77" style="width:768px;height:800px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ad3e4880efdc99e54f77">{"x":{"nodes":{"id":["Var11","Var12","Var17","Var23","Var28","Var30","Var31","Var38"],"score":[0.9836927065459334,2.705611644191563,6.465950435867914,10.01670459761831,1.48259518099601,3.124085660050605,7.107697899264836,-3.487106267001228],"color":["#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","#E7298A","grey"],"size":[5.991846353272967,6.852805822095782,8.732975217933957,10.50835229880915,6.241297590498005,7.062042830025303,9.053848949632417,3.756446866499386],"label":["Var11","Var12","Var17","Var23","Var28","Var30","Var31","Var38"]},"edges":{"from":["Var11","Var11","Var11","Var11","Var11","Var11","Var11","Var12","Var12","Var12","Var12","Var12","Var12","Var17","Var17","Var17","Var17","Var17","Var23","Var23","Var23","Var23","Var28","Var28","Var28","Var30","Var30","Var31"],"to":["Var12","Var17","Var23","Var28","Var30","Var31","Var38","Var17","Var23","Var28","Var30","Var31","Var38","Var23","Var28","Var30","Var31","Var38","Var28","Var30","Var31","Var38","Var30","Var31","Var38","Var31","Var38","Var38"],"score":[-2.889023703049022,-3.150174177276814,7.37076701282126,0.06151795766164588,12.92442771964381,4.069919295062341,-3.092848643049635,7.687955166642939,-2.432221010823717,7.445228261838738,-2.96806340139145,-1.326085920480249,14.28955599307699,-3.02353061873228,3.583123575264765,0.9348057329010806,-2.386063826997713,13.27961492068283,-3.119628119952023,-2.960301513416248,-1.617779109290828,28.99644525734825,-2.980487115546175,-2.964473915135545,7.348669928567433,-3.024634748328029,10.3083890153772,-1.365923805901925],"name":["Var11_Var12","Var11_Var17","Var11_Var23","Var11_Var28","Var11_Var30","Var11_Var31","Var11_Var38","Var12_Var17","Var12_Var23","Var12_Var28","Var12_Var30","Var12_Var31","Var12_Var38","Var17_Var23","Var17_Var28","Var17_Var30","Var17_Var31","Var17_Var38","Var23_Var28","Var23_Var30","Var23_Var31","Var23_Var38","Var28_Var30","Var28_Var31","Var28_Var38","Var30_Var31","Var30_Var38","Var31_Var38"],"dashes":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"width":[-0.4167071109147065,-0.4950522531830443,2.661230103846378,0.4684553872984937,4.327328315893141,1.670975788518702,-0.4778545929148906,2.756386549992882,-0.279666303247115,2.683568478551621,-0.4404190204174349,0.05217422385592534,4.736866797923098,-0.457059185619684,1.524937072579429,0.7304417198703241,-0.2658191480993138,4.433884476204848,-0.4858884359856068,-0.4380904540248745,-0.03533373278724847,9.148933577204474,-0.4441461346638526,-0.4393421745406634,2.65460097857023,-0.4573904244984087,3.542516704613159,0.04022285822942238],"color":["grey","grey","#66A61E","#66A61E","#66A61E","#66A61E","grey","#66A61E","grey","#66A61E","grey","grey","#66A61E","grey","#66A61E","#66A61E","grey","#66A61E","grey","grey","grey","#66A61E","grey","grey","#66A61E","grey","#66A61E","grey"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","font":{"size":20}},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"800px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+## + edges from 04f1d05 (vertex names):
+##  [1] Var9 --Var6  Var13--Var6  Var17--Var6  Var18--Var6  Var19--Var6 
+##  [6] Var20--Var6  Var25--Var6  Var26--Var6  Var6 --Var32 Var34--Var6 
+## [11] Var6 --Var36 Var38--Var6  Var13--Var9  Var17--Var9  Var18--Var9 
+## [16] Var19--Var9  Var20--Var9  Var25--Var9  Var26--Var9  Var9 --Var32
+## [21] Var34--Var9  Var9 --Var36 Var38--Var9  Var17--Var13 Var18--Var13
+## [26] Var19--Var13 Var20--Var13 Var25--Var13 Var26--Var13 Var13--Var32
+## [31] Var34--Var13 Var13--Var36 Var38--Var13 Var17--Var18 Var19--Var17
+## [36] Var17--Var20 Var25--Var17 Var26--Var17 Var17--Var32 Var34--Var17
+## + ... omitted several edges
+## 
+## [[2]]
+## IGRAPH 04f8257 UN-- 12 66 -- 
+## + attr: name (v/c), score (v/n), score (e/n), name (e/c)
+## + edges from 04f8257 (vertex names):
+##  [1] Var3 --Var4  Var3 --Var8  Var3 --Var12 Var3 --Var21 Var3 --Var23
+##  [6] Var3 --Var27 Var3 --Var28 Var3 --Var33 Var3 --Var35 Var3 --Var37
+## [11] Var3 --Var39 Var8 --Var4  Var12--Var4  Var21--Var4  Var23--Var4 
+## [16] Var27--Var4  Var4 --Var28 Var33--Var4  Var35--Var4  Var37--Var4 
+## [21] Var39--Var4  Var8 --Var12 Var8 --Var21 Var23--Var8  Var8 --Var27
+## [26] Var8 --Var28 Var33--Var8  Var8 --Var35 Var8 --Var37 Var8 --Var39
+## [31] Var12--Var21 Var23--Var12 Var27--Var12 Var12--Var28 Var33--Var12
+## [36] Var12--Var35 Var12--Var37 Var12--Var39 Var23--Var21 Var27--Var21
+## + ... omitted several edges</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="co">#visualize the final illustrated detected optimized subnetwork by our proposed algorithm</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a><span class="co">#for edges, edge score &gt;=0, solid line, edge score &lt; 0, dash line</span></span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a><span class="co">#for nodes, node score &gt;=0, red color, edge score &lt; 0, grey color </span></span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a><span class="co">#the size/length of node or edges proportional to node or edge score respectively</span></span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a><span class="co">#need R package-visNetwork, if not, please install from CRAN</span></span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a><span class="co">#require(visNetwork, quietly = TRUE)</span></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>dat_nodeedge<span class="ot">&lt;-</span>multi.mod.e[[<span class="dv">1</span>]]</span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a> <span class="fu">E</span>(dat_nodeedge)<span class="sc">$</span>dashes<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">E</span>(dat_nodeedge)<span class="sc">$</span>score<span class="sc">&gt;</span><span class="dv">0</span>,<span class="cn">FALSE</span>,<span class="cn">FALSE</span>)</span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a>  <span class="fu">E</span>(dat_nodeedge)<span class="sc">$</span>width<span class="ot">&lt;-</span>(<span class="fu">E</span>(dat_nodeedge)<span class="sc">$</span>score<span class="fl">+1.5</span>)<span class="sc">*</span><span class="fl">0.3</span></span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a>  <span class="fu">V</span>(dat_nodeedge)<span class="sc">$</span>color<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">V</span>(dat_nodeedge)<span class="sc">$</span>score<span class="sc">&gt;</span><span class="dv">0</span>,<span class="st">&quot;#E7298A&quot;</span>,<span class="st">&quot;grey&quot;</span>)</span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a>  <span class="fu">V</span>(dat_nodeedge)<span class="sc">$</span>size<span class="ot">&lt;-</span>(<span class="fu">V</span>(dat_nodeedge)<span class="sc">$</span>score<span class="sc">+</span><span class="dv">11</span>)<span class="sc">*</span><span class="fl">0.5</span></span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a>  </span>
+<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a>  <span class="fu">E</span>(dat_nodeedge)<span class="sc">$</span>color<span class="ot">&lt;-</span><span class="fu">ifelse</span>(<span class="fu">E</span>(dat_nodeedge)<span class="sc">$</span>score<span class="sc">&gt;</span><span class="dv">0</span>,<span class="st">&quot;#66A61E&quot;</span>,<span class="st">&quot;grey&quot;</span>)</span>
+<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a>  </span>
+<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a>  </span>
+<span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a> <span class="do">#########################################################################################</span></span>
+<span id="cb30-17"><a href="#cb30-17" tabindex="-1"></a>  <span class="co"># setwd(&quot;/Users/yubingyao/Google Drive/Network analysis/R code/&quot;)</span></span>
+<span id="cb30-18"><a href="#cb30-18" tabindex="-1"></a>  </span>
+<span id="cb30-19"><a href="#cb30-19" tabindex="-1"></a> <span class="co"># save(GU2,file=&quot;network2_2clusters_plot.RData&quot;)</span></span>
+<span id="cb30-20"><a href="#cb30-20" tabindex="-1"></a>  </span>
+<span id="cb30-21"><a href="#cb30-21" tabindex="-1"></a>  </span>
+<span id="cb30-22"><a href="#cb30-22" tabindex="-1"></a>  </span>
+<span id="cb30-23"><a href="#cb30-23" tabindex="-1"></a>  <span class="co">#load(&quot;network_2clusters_plot.RData&quot;)</span></span>
+<span id="cb30-24"><a href="#cb30-24" tabindex="-1"></a>  </span>
+<span id="cb30-25"><a href="#cb30-25" tabindex="-1"></a>  data_nodeedge <span class="ot">&lt;-</span> <span class="fu">toVisNetworkData</span>(dat_nodeedge)</span>
+<span id="cb30-26"><a href="#cb30-26" tabindex="-1"></a>  </span>
+<span id="cb30-27"><a href="#cb30-27" tabindex="-1"></a>  <span class="fu">visNetwork</span>(<span class="at">nodes =</span> data_nodeedge<span class="sc">$</span>nodes, <span class="at">edges =</span> data_nodeedge<span class="sc">$</span>edges, <span class="at">height =</span> <span class="st">&quot;800px&quot;</span>)<span class="sc">%&gt;%</span> <span class="fu">visNodes</span>(<span class="at">font=</span><span class="fu">list</span>(<span class="at">size=</span><span class="dv">20</span>))</span></code></pre></div>
+<div id="htmlwidget-f257bab51e92b92f6903" style="width:768px;height:800px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f257bab51e92b92f6903">{"x":{"nodes":{"id":["Var19","Var34","Var26","Var38","Var25","Var17","Var18","Var20","Var13","Var9","Var6","Var32","Var36"],"score":[0.3768562881885642,0.3277310238574841,-4.490462784912365,-3.746143556555444,-3.592815955998363,-4.451569979407338,-4.671892647669017,-4.103773327891727,-4.531010572592396,-4.299621309947757,-3.196341348531634,-4.317911383145914,-3.40249392581341],"color":["#E7298A","#E7298A","grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","grey"],"size":[5.688428144094282,5.663865511928742,3.254768607543817,3.626928221722278,3.703592022000818,3.274215010296331,3.164053676165492,3.448113336054137,3.234494713703802,3.350189345026121,3.901829325734183,3.341044308427043,3.798753037093295],"label":["Var19","Var34","Var26","Var38","Var25","Var17","Var18","Var20","Var13","Var9","Var6","Var32","Var36"]},"edges":{"from":["Var9","Var13","Var17","Var18","Var19","Var20","Var25","Var26","Var6","Var34","Var6","Var38","Var13","Var17","Var18","Var19","Var20","Var25","Var26","Var9","Var34","Var9","Var38","Var17","Var18","Var19","Var20","Var25","Var26","Var13","Var34","Var13","Var38","Var17","Var19","Var17","Var25","Var26","Var17","Var34","Var17","Var38","Var19","Var18","Var25","Var26","Var18","Var34","Var18","Var38","Var19","Var19","Var19","Var19","Var19","Var19","Var19","Var25","Var26","Var20","Var34","Var20","Var38","Var26","Var25","Var34","Var25","Var38","Var26","Var34","Var26","Var26","Var34","Var32","Var38","Var34","Var34","Var38"],"to":["Var6","Var6","Var6","Var6","Var6","Var6","Var6","Var6","Var32","Var6","Var36","Var6","Var9","Var9","Var9","Var9","Var9","Var9","Var9","Var32","Var9","Var36","Var9","Var13","Var13","Var13","Var13","Var13","Var13","Var32","Var13","Var36","Var13","Var18","Var17","Var20","Var17","Var17","Var32","Var17","Var36","Var17","Var18","Var20","Var18","Var18","Var32","Var18","Var36","Var18","Var20","Var25","Var26","Var32","Var34","Var36","Var38","Var20","Var20","Var32","Var20","Var36","Var20","Var25","Var32","Var25","Var36","Var25","Var32","Var26","Var36","Var38","Var32","Var36","Var32","Var36","Var38","Var36"],"score":[-2.928249519841109,-2.539808308768166,3.482786760307606,-1.358202812528416,-1.646031319256497,9.329803462944007,-1.293924327860379,-3.01335867593961,-0.7487637727644673,8.272268252677895,-0.8288830099818421,-2.131490278094684,9.149820749941426,-1.845428167633624,-2.481461674117791,-0.5372825127298042,-0.1887499718746327,5.28913757212537,-2.22919753630087,-1.772615523813447,8.97606218239782,22.46796585062907,-2.308930616338291,-0.9857036086043206,-2.801272474214367,-2.856688376083094,0.1260198720091474,4.908110133168919,19.04075450885331,-2.038785738236181,13.1850522610894,-2.877005729986817,-2.658780218077189,6.919692696215103,13.00857128637608,-2.074149805038922,-1.543292528391702,-1.540727437104493,-2.989401226677176,5.791377274761667,-1.466123265177788,-2.359043833969244,1.798172817681639,-3.01738589775223,-2.977570652460368,5.596496691743239,-1.771553597484435,14.11318597673084,-0.1354796154908096,-0.07227074091890498,11.40326178223887,27.07784192121352,-2.255330291899615,7.388410762090214,10.05719500197415,-3.088869413824513,31.88106632246872,-1.737034542808919,-2.661150923359501,0.7069762857334012,0.1950666352567237,-0.1103391336571967,-1.692915379068429,17.7877433662815,-1.212118573731312,-2.19283014716805,-2.614207077340829,-1.801606200538709,18.30445574664042,39.25876176907312,4.872540897002071,2.801426263745668,-2.650537821373431,-2.828072213702148,-2.141568593959745,6.704085901910592,3.891729034182214,2.270137859808547],"name":["Var6_Var9","Var6_Var13","Var6_Var17","Var6_Var18","Var6_Var19","Var6_Var20","Var6_Var25","Var6_Var26","Var6_Var32","Var6_Var34","Var6_Var36","Var6_Var38","Var9_Var13","Var9_Var17","Var9_Var18","Var9_Var19","Var9_Var20","Var9_Var25","Var9_Var26","Var9_Var32","Var9_Var34","Var9_Var36","Var9_Var38","Var13_Var17","Var13_Var18","Var13_Var19","Var13_Var20","Var13_Var25","Var13_Var26","Var13_Var32","Var13_Var34","Var13_Var36","Var13_Var38","Var17_Var18","Var17_Var19","Var17_Var20","Var17_Var25","Var17_Var26","Var17_Var32","Var17_Var34","Var17_Var36","Var17_Var38","Var18_Var19","Var18_Var20","Var18_Var25","Var18_Var26","Var18_Var32","Var18_Var34","Var18_Var36","Var18_Var38","Var19_Var20","Var19_Var25","Var19_Var26","Var19_Var32","Var19_Var34","Var19_Var36","Var19_Var38","Var20_Var25","Var20_Var26","Var20_Var32","Var20_Var34","Var20_Var36","Var20_Var38","Var25_Var26","Var25_Var32","Var25_Var34","Var25_Var36","Var25_Var38","Var26_Var32","Var26_Var34","Var26_Var36","Var26_Var38","Var32_Var34","Var32_Var36","Var32_Var38","Var34_Var36","Var34_Var38","Var36_Var38"],"dashes":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"width":[-0.4284748559523326,-0.3119424926304498,1.494836028092282,0.0425391562414752,-0.04380939577694898,3.248941038883202,0.06182270164188619,-0.4540076027818831,0.2253708681706598,2.931680475803368,0.2013350970054474,-0.1894470834284051,3.194946224982428,-0.1036284502900871,-0.2944385022353372,0.2888152461810587,0.3933750084376101,2.036741271637611,-0.218759260890261,-0.08178465714403413,3.142818654719346,7.190389755188722,-0.2426791849014872,0.1542889174187038,-0.3903817422643102,-0.4070065128249281,0.4878059616027442,1.922433039950676,6.162226352655992,-0.1616357214708543,4.405515678326819,-0.4131017189960451,-0.3476340654231567,2.525907808864531,4.352571385912824,-0.1722449415116765,-0.01298775851751055,-0.01221823113134797,-0.4468203680031528,2.1874131824285,0.01016302044666353,-0.2577131501907732,0.9894518453044916,-0.4552157693256689,-0.4432711957381102,2.128949007522972,-0.08146607924533049,4.68395579301925,0.4093561153527571,0.4283187777243285,3.870978534671661,8.573352576364055,-0.2265990875698846,2.666523228627064,3.467158500592246,-0.4766608241473538,10.01431989674061,-0.07111036284267573,-0.3483452770078502,0.6620928857200205,0.5085199905770171,0.416898259902841,-0.05787461372052871,5.786323009884449,0.08636442788060651,-0.2078490441504149,-0.3342621232022486,-0.09048186016161283,5.941336723992126,12.22762853072194,1.911762269100621,1.2904278791237,-0.3451613464120294,-0.3984216641106443,-0.1924705781879235,2.461225770573177,1.617518710254664,1.131041357942564],"color":["grey","grey","#66A61E","grey","grey","#66A61E","grey","grey","grey","#66A61E","grey","grey","#66A61E","grey","grey","grey","grey","#66A61E","grey","grey","#66A61E","#66A61E","grey","grey","grey","grey","#66A61E","#66A61E","#66A61E","grey","#66A61E","grey","grey","#66A61E","#66A61E","grey","grey","grey","grey","#66A61E","grey","grey","#66A61E","grey","grey","#66A61E","grey","#66A61E","grey","grey","#66A61E","#66A61E","grey","#66A61E","#66A61E","grey","#66A61E","grey","grey","#66A61E","#66A61E","grey","grey","#66A61E","grey","grey","grey","grey","#66A61E","#66A61E","#66A61E","#66A61E","grey","grey","grey","#66A61E","#66A61E","#66A61E"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","font":{"size":20}},"manipulation":{"enabled":false}},"groups":null,"width":null,"height":"800px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-<div id="real-dataset-of-ovarian-cancer" class="section level2">
-<h2>Real dataset of ovarian cancer</h2>
+<div id="application-on-the-dataset-of-ovarian-cancer" class="section level2">
+<h2>Application on the dataset of ovarian cancer</h2>
 <p>This uses a set of public ovarian cancer data in the
 curatedOvarianData R package. See “??curatedOvarianData” in the RStudio
 console for more help with this dataset: “This package represents a
@@ -7216,160 +7232,112 @@ immediately without the challenges posed by harmonizing heterogeneous
 microarray technologies, study designs, expression data processing
 methods, and clinical data formats.”</p>
 <p>Because this is full-transcriptome data, we will load the data and
-select only a subset of it. ### Downloading and preprocessing ovarian
-cancer data</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">&quot;BiocManager&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>    <span class="fu">install.packages</span>(<span class="st">&quot;BiocManager&quot;</span>)</span>
-<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="co">#BiocManager::install(version = &quot;3.19&quot;)</span></span>
-<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a></span>
-<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a><span class="fu">library</span>(BiocManager)</span>
-<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a><span class="co"># Uncomment this line to install the affy and curatedOvarianData package </span></span>
-<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a><span class="co"># Takes time, so re-comment after</span></span>
-<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a><span class="co"># BiocManager::install(&quot;affy&quot;)</span></span>
-<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a><span class="co"># BiocManager::install(&quot;curatedOvarianData&quot;)</span></span>
-<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a></span>
-<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a><span class="co">#library(devtools)</span></span>
-<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a></span>
-<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a><span class="co">#install_github(&quot;yuy113/wActNet&quot;, force = TRUE)</span></span>
-<span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
-<span id="cb32-15"><a href="#cb32-15" tabindex="-1"></a></span>
-<span id="cb32-16"><a href="#cb32-16" tabindex="-1"></a><span class="fu">library</span>(affy)</span>
-<span id="cb32-17"><a href="#cb32-17" tabindex="-1"></a><span class="co">#library(BioNet)</span></span>
-<span id="cb32-18"><a href="#cb32-18" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb32-19"><a href="#cb32-19" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
-<span id="cb32-20"><a href="#cb32-20" tabindex="-1"></a><span class="co">#library(wActNet)</span></span>
-<span id="cb32-21"><a href="#cb32-21" tabindex="-1"></a><span class="fu">library</span>(curatedOvarianData)</span></code></pre></div>
-<p>###Load and select a subset of the ovarian cancer data.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>standardize <span class="ot">=</span> <span class="cf">function</span>(x){<span class="fu">return</span>((x<span class="sc">-</span><span class="fu">mean</span>(x))<span class="sc">/</span><span class="fu">sd</span>(x))}</span>
-<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a></span>
-<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a><span class="fu">data</span>(GSE32062.GPL6480_eset)</span>
-<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>lateStage <span class="ot">=</span> <span class="fu">exprs</span>(GSE32062.GPL6480_eset)</span></code></pre></div>
+select only a subset of it.</p>
+<div id="downloading-and-preprocessing-ovarian-cancer-data" class="section level3">
+<h3>Downloading and preprocessing ovarian cancer data</h3>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">require</span>(<span class="st">&quot;BiocManager&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>    <span class="fu">install.packages</span>(<span class="st">&quot;BiocManager&quot;</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a><span class="co">#BiocManager::install(version = &quot;3.19&quot;)</span></span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a><span class="fu">library</span>(BiocManager)</span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a><span class="co"># Uncomment this line to install the affy and curatedOvarianData package </span></span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a><span class="co"># Takes time, so re-comment after</span></span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a><span class="co"># BiocManager::install(&quot;affy&quot;)</span></span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a><span class="co"># BiocManager::install(&quot;curatedOvarianData&quot;)</span></span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a><span class="co">#library(devtools)</span></span>
+<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a></span>
+<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a><span class="co">#install_github(&quot;yuy113/wActNet&quot;, force = TRUE)</span></span>
+<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a></span>
+<span id="cb31-17"><a href="#cb31-17" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb31-18"><a href="#cb31-18" tabindex="-1"></a></span>
+<span id="cb31-19"><a href="#cb31-19" tabindex="-1"></a><span class="fu">library</span>(affy)</span>
+<span id="cb31-20"><a href="#cb31-20" tabindex="-1"></a><span class="co">#library(BioNet)</span></span>
+<span id="cb31-21"><a href="#cb31-21" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb31-22"><a href="#cb31-22" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb31-23"><a href="#cb31-23" tabindex="-1"></a><span class="co">#library(wActNet)</span></span>
+<span id="cb31-24"><a href="#cb31-24" tabindex="-1"></a><span class="fu">library</span>(curatedOvarianData)</span></code></pre></div>
+</div>
+<div id="load-and-select-a-subset-of-the-ovarian-cancer-data." class="section level3">
+<h3>Load and select a subset of the ovarian cancer data.</h3>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>standardize <span class="ot">=</span> <span class="cf">function</span>(x){<span class="fu">return</span>((x<span class="sc">-</span><span class="fu">mean</span>(x))<span class="sc">/</span><span class="fu">sd</span>(x))}</span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="fu">data</span>(GSE32062.GPL6480_eset)</span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a>lateStage <span class="ot">=</span> <span class="fu">exprs</span>(GSE32062.GPL6480_eset)</span></code></pre></div>
 <p>For a straightforward example on a small set of genes, use the chunk
 below:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="co"># Extract a subset of genes related to ovarian carcinoma </span></span>
-<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a><span class="co"># based on the Human Phenotype Ontology</span></span>
-<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a><span class="co"># See https://hpo.jax.org/app/browse/term/HP:0025318</span></span>
-<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a></span>
-<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>lateStageSmall <span class="ot">=</span> lateStage[<span class="fu">c</span>(<span class="dv">1680</span>,<span class="dv">1681</span>,<span class="dv">3027</span>,<span class="dv">4564</span>,<span class="dv">8930</span>,<span class="dv">12243</span>,<span class="dv">12245</span>,<span class="dv">13694</span>,<span class="dv">13695</span>,<span class="dv">13701</span>,<span class="dv">13979</span>,<span class="dv">16082</span>,<span class="dv">16875</span>,<span class="dv">17980</span>),] <span class="sc">%&gt;%</span></span>
-<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a>  <span class="fu">apply</span>(.,<span class="dv">2</span>,standardize)</span></code></pre></div>
-<p>Select a set of 50 genes/predictors</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="co"># select a random subset of genes to test different sizes</span></span>
-<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>setSize <span class="ot">=</span> <span class="dv">50</span></span>
-<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1989</span>)</span>
-<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a><span class="co"># remove genes with weird symbols in the names as this messes up wActNet</span></span>
-<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a>lateStage <span class="ot">=</span> lateStage[<span class="sc">-</span><span class="fu">grep</span>(<span class="st">&quot;///&quot;</span>,<span class="fu">row.names</span>(lateStage)),]</span>
-<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a>geneIdx <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(lateStage), <span class="at">size=</span>setSize,<span class="at">replace=</span>F)</span>
-<span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a>lateStageSmall <span class="ot">=</span> lateStage[geneIdx,] <span class="sc">%&gt;%</span></span>
-<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb35-9"><a href="#cb35-9" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb35-10"><a href="#cb35-10" tabindex="-1"></a>  <span class="fu">apply</span>(.,<span class="dv">2</span>,standardize)</span>
-<span id="cb35-11"><a href="#cb35-11" tabindex="-1"></a><span class="fu">names</span>(lateStageSmall) <span class="ot">=</span> <span class="fu">colnames</span>(lateStageSmall)</span>
-<span id="cb35-12"><a href="#cb35-12" tabindex="-1"></a><span class="fu">head</span>(lateStageSmall)</span></code></pre></div>
-<pre><code>##                ACTL8      ABCF2   ACTR3BP2       AATK      ABCG2    AADACL2
-## GSM794865 -0.6110005 -0.5201983 -0.4941084 -0.2013267  0.3999489 -0.6751588
-## GSM794866  0.5773869  1.1707556  0.8688812  1.7998879  1.4134654  0.9175988
-## GSM794867  0.7972670  0.2033748 -0.3158110 -1.0162514 -0.6704725  0.7182664
-## GSM794868  0.8052376 -0.1369159  1.0108768  1.1048020 -1.1774420  0.2768921
-## GSM794869 -0.6010024 -0.3744105  0.1510815 -0.1289747 -0.4041946 -0.3109831
-## GSM794870  1.5305109  1.1541491  0.7078612 -0.6589332 -0.5660770  0.8078790
-##                AASDH      ADAM6       ABHD17B     ACBD4      A4GALT      ABCG1
-## GSM794865 -0.2514184  0.3074909 -1.1371222863 0.3953089  1.09976023  0.2305586
-## GSM794866 -0.8182117 -0.4912574  0.8092301232 1.1346630 -0.28417911  0.2292238
-## GSM794867  0.7695287  0.9762383  0.7403583941 1.7522695  0.01965754  2.3022482
-## GSM794868 -1.8043498  0.1587560 -2.6218679012 1.7504173 -0.15346837  0.5623770
-## GSM794869 -0.5822814  0.2023677  0.5445142763 1.4847542  0.12127820 -0.4966647
-## GSM794870 -0.1971341 -1.5778798  0.0009352584 1.5527199 -0.08892486  0.2975277
-##                  AATF      AAMDC       ACCS       ABTB1       ABRA      ABCC1
-## GSM794865 -0.26220833  1.9474044  0.1449359  0.53138494 -0.7961688  0.4952518
-## GSM794866 -0.00398213  0.1823878  0.2623678 -0.08688547 -0.9230359  0.4738105
-## GSM794867  1.72123187 -0.6232572 -1.2409951  0.29106438  1.4671610  1.2179442
-## GSM794868  0.41836049  0.8648403  0.9280941  0.60195582  0.7875870  0.2574009
-## GSM794869 -1.03159579 -0.1343162 -2.0972006 -0.48784288 -0.1575189  0.5126451
-## GSM794870  3.30843580 -0.6017631 -1.1933454  0.05507373  0.8407425 -0.5344918
-##                ACTR3      ABCF3      ABCB1     ACVR2B      ABCA1   A1BG.AS1
-## GSM794865 -0.1435061 -1.2899010  0.2651037 -0.7088481  0.6479502  0.5581439
-## GSM794866 -0.6388306  1.5499082 -1.0543620  0.2360777  0.7426203 -0.5355274
-## GSM794867  1.3691502  0.9241390 -0.2845766  0.6136083  1.0125975  0.9857568
-## GSM794868 -0.4007596  0.7689948 -0.7311450  0.1044790 -1.0880951 -0.6000945
-## GSM794869 -1.5040622 -1.5798527  0.9499041 -1.3498004 -1.0666262  0.6201506
-## GSM794870 -0.1905161  0.8284716 -0.7616013 -0.7015686  0.4705166  0.3972798
-##                ACOT4      ACMSD      ABCC2       ABCB7      ACKR3     ACVR1C
-## GSM794865 -0.1521158 -0.6733020  0.1651289 -0.75942423  1.7401563  0.4956566
-## GSM794866 -0.9124431 -0.9344235 -0.5071398 -0.19424826  1.1753133 -0.9950912
-## GSM794867  0.8072069  2.0085345  1.2677609  0.01178167 -0.2289622  0.8011481
-## GSM794868  1.2806555  1.0366052 -0.4219222 -0.17525831 -0.2137190 -1.0321540
-## GSM794869  1.5499032 -0.1929399  0.8086053 -0.36571059  0.4249351 -0.1228395
-## GSM794870 -0.2352102  1.4267467 -1.5998972 -0.28981301  0.3363143 -0.6778446
-##              ABCA17P       ACN9     ACTN4P1     ACTL7B      ACVRL1      ACBD6
-## GSM794865 -0.1696856 -0.1494597 -0.59004606  2.6077705  1.68229941 -0.5634193
-## GSM794866  0.2335591 -0.1698707  0.30047540  0.5847768 -0.62993086  0.6834641
-## GSM794867  0.2603671  0.4380725 -1.32711451 -1.1720975  0.40537440  0.6747596
-## GSM794868  1.1310880 -1.0748165  0.22871260 -0.6457349  0.03093953  1.3113489
-## GSM794869 -1.1913178 -0.8994982 -0.02008679 -0.6371153  0.57212659 -2.0158035
-## GSM794870 -1.7942017 -0.9647049  0.96309812 -1.7875396  1.59179648  0.6905423
-##                ADAM8        ACTC1     ACTR3C      ACTR8      ADAM28        ADAL
-## GSM794865  1.8769482  0.806249003 -0.3521177 -0.7228148  1.10290850 -0.82831611
-## GSM794866  1.4093996  0.004544678  0.2568784 -0.2117251  1.83001746 -2.20325621
-## GSM794867  1.0375458  0.094912887 -0.2993382  0.5692978  2.16834085  1.11579357
-## GSM794868 -0.3680471  0.294695074  0.7124287  1.7778001 -0.13197630  0.39828012
-## GSM794869  0.5214192 -0.210556293  0.3597135  0.3687238  1.41971247 -2.46409292
-## GSM794870  0.8977319  1.544557924  0.1117440  0.1047366 -0.05773117  0.04845686
-##                ACAD9       AADAC      ACSS1       ABCB4     ABLIM1      ABHD5
-## GSM794865 -0.9750260  0.34501194 -0.1601441  1.84959337  0.1012265  1.2373197
-## GSM794866 -1.4348364  0.49583263  0.7878130  0.06273426  0.7483512  0.5837191
-## GSM794867 -0.4078659 -0.45384351 -1.0686520 -0.02645303 -1.5638553 -0.0671764
-## GSM794868  0.2144549  0.56938703 -0.7856148 -0.50609631  0.5152213  0.1753585
-## GSM794869  1.0878023 -0.72354209  1.1407987 -1.16188199 -0.3624943  1.2462847
-## GSM794870  1.0089885 -0.02784122 -1.5084703  1.32309573  0.3466445 -0.3632173
-##             AASDHPPT       ABT1
-## GSM794865  0.2362368  0.4073615
-## GSM794866  0.6965406  0.3641148
-## GSM794867  0.2937182  1.1213002
-## GSM794868 -0.5391128 -1.4204774
-## GSM794869 -1.6979199  0.8352864
-## GSM794870 -0.1698408  1.0136413</code></pre>
-<div id="assigning-edge-p-values-with-permutation-on-a-correlation-network" class="section level3">
-<h3>Assigning edge p-values with permutation on a correlation
-network</h3>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="co"># Extract a subset of genes related to ovarian carcinoma </span></span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="co"># based on the Human Phenotype Ontology</span></span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a><span class="co"># See https://hpo.jax.org/app/browse/term/HP:0025318</span></span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>lateStageSmall <span class="ot">=</span> lateStage[<span class="fu">c</span>(<span class="dv">1680</span>,<span class="dv">1681</span>,<span class="dv">3027</span>,<span class="dv">4564</span>,<span class="dv">8930</span>,<span class="dv">12243</span>,<span class="dv">12245</span>,<span class="dv">13694</span>,<span class="dv">13695</span>,<span class="dv">13701</span>,<span class="dv">13979</span>,<span class="dv">16082</span>,<span class="dv">16875</span>,<span class="dv">17980</span>),] <span class="sc">%&gt;%</span></span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a>  <span class="fu">apply</span>(.,<span class="dv">2</span>,standardize)</span></code></pre></div>
+<p>Use the code chunk below to instead randomly select a larger group of
+genes. Note that wActNet does not handle gene names with certain
+symbols, for example “///” in the ovarian cancer dataset. Additionally,
+underscores will not work because this symbol is used later in order to
+connect two node names. We provide an example workaround below:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="co"># select a random subset of genes to test different sizes</span></span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>setSize <span class="ot">=</span> <span class="dv">500</span></span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1989</span>)</span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a><span class="co"># remove genes with weird symbols in the names as this messes up wActNet</span></span>
+<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a><span class="fu">row.names</span>(lateStage) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;///&quot;</span>, <span class="st">&quot;-&quot;</span>, <span class="fu">row.names</span>(lateStage))</span>
+<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a>geneIdx <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(lateStage), <span class="at">size=</span>setSize,<span class="at">replace=</span>F)</span>
+<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a>lateStageSmall <span class="ot">=</span> lateStage[geneIdx,] <span class="sc">%&gt;%</span></span>
+<span id="cb34-9"><a href="#cb34-9" tabindex="-1"></a>  <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb34-10"><a href="#cb34-10" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb34-11"><a href="#cb34-11" tabindex="-1"></a>  <span class="fu">apply</span>(.,<span class="dv">2</span>,standardize)</span>
+<span id="cb34-12"><a href="#cb34-12" tabindex="-1"></a><span class="fu">names</span>(lateStageSmall) <span class="ot">=</span> <span class="fu">colnames</span>(lateStageSmall)</span>
+<span id="cb34-13"><a href="#cb34-13" tabindex="-1"></a><span class="co">#head(lateStageSmall)</span></span></code></pre></div>
+</div>
+<div id="assigning-edge-p-values" class="section level3">
+<h3>Assigning edge p-values</h3>
 <p>To generate edge p-values, we use a permutation test on a correlation
 network. You can vary <code>nsim</code> to make this easier to test,
 although in practice you’ll want to use a high number.</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a>edge_p_vals <span class="ot">=</span> <span class="fu">pval.perm.corr</span>(<span class="at">dat =</span> lateStageSmall,<span class="at">MatchId =</span> <span class="cn">NULL</span>,</span>
-<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a>               <span class="at">nsim =</span> <span class="dv">1000</span>, <span class="at">do.parallel =</span> F, <span class="at">no_cores =</span> <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>edge_p_vals <span class="ot">=</span> wActNet<span class="sc">::</span><span class="fu">pval.perm.corr</span>(<span class="at">dat =</span> lateStageSmall,<span class="at">MatchId =</span> <span class="cn">NULL</span>,</span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>               <span class="at">nsim =</span> <span class="dv">1000</span>, <span class="at">do.parallel =</span> F, <span class="at">no_cores =</span> <span class="dv">1</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a><span class="co">#names(edge_p_vals)</span></span></code></pre></div>
 </div>
-<div id="assigning-node-p-values-associated-with-covariate" class="section level3">
-<h3>Assigning node p-values associated with covariate</h3>
+<div id="assigning-node-p-values" class="section level3">
+<h3>Assigning node p-values</h3>
 <p>To assign node p-values, we will regress the expression of each gene
 against summary grade.</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a>lateStagePheno <span class="ot">=</span> <span class="fu">phenoData</span>(GSE32062.GPL6480_eset)</span>
-<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a>gradeInfo <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="st">&quot;sample&quot;</span><span class="ot">=</span><span class="fu">row.names</span>(<span class="fu">pData</span>(lateStagePheno)),</span>
-<span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a>                       <span class="st">&quot;summarygrade&quot;</span><span class="ot">=</span><span class="fu">pData</span>(lateStagePheno)<span class="sc">$</span>summarygrade) </span>
-<span id="cb38-4"><a href="#cb38-4" tabindex="-1"></a>regressionDataset <span class="ot">=</span> lateStageSmall <span class="sc">%&gt;%</span> </span>
-<span id="cb38-5"><a href="#cb38-5" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb38-6"><a href="#cb38-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">&quot;sample&quot;</span><span class="ot">=</span><span class="fu">row.names</span>(lateStageSmall)) <span class="sc">%&gt;%</span></span>
-<span id="cb38-7"><a href="#cb38-7" tabindex="-1"></a>  <span class="fu">inner_join</span>(gradeInfo,<span class="at">by=</span><span class="st">&quot;sample&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>lateStagePheno <span class="ot">=</span> <span class="fu">phenoData</span>(GSE32062.GPL6480_eset)</span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>gradeInfo <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="st">&quot;sample&quot;</span><span class="ot">=</span><span class="fu">row.names</span>(<span class="fu">pData</span>(lateStagePheno)),</span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a>                       <span class="st">&quot;summarygrade&quot;</span><span class="ot">=</span><span class="fu">pData</span>(lateStagePheno)<span class="sc">$</span>summarygrade) </span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a>regressionDataset <span class="ot">=</span> lateStageSmall <span class="sc">%&gt;%</span> </span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">&quot;sample&quot;</span><span class="ot">=</span><span class="fu">row.names</span>(lateStageSmall)) <span class="sc">%&gt;%</span></span>
+<span id="cb36-7"><a href="#cb36-7" tabindex="-1"></a>  <span class="fu">inner_join</span>(gradeInfo,<span class="at">by=</span><span class="st">&quot;sample&quot;</span>)</span></code></pre></div>
 <p>To get node weights, we regress gene expression against summary grade
 and take the resulting p-values. Note that we take the raw p-values and
 not the FDR, as the conversion to node scores in wActNet provides FDR
 control.</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">library</span>(limma)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="co"># BiocManager::install(&quot;limma&quot;)</span></span>
+<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a><span class="fu">library</span>(limma)</span></code></pre></div>
 <pre><code>## 
 ## Attaching package: &#39;limma&#39;</code></pre>
 <pre><code>## The following object is masked from &#39;package:BiocGenerics&#39;:
 ## 
 ##     plotMA</code></pre>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>design_matrix <span class="ot">=</span> <span class="fu">model.matrix</span>( <span class="sc">~</span> <span class="fu">factor</span>(summarygrade),<span class="at">data=</span>regressionDataset)</span>
-<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a>limma_res <span class="ot">=</span> regressionDataset <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(sample,summarygrade)) <span class="sc">%&gt;%</span> <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb42-3"><a href="#cb42-3" tabindex="-1"></a>  <span class="fu">lmFit</span>(<span class="at">object =</span> ., <span class="at">design =</span> design_matrix) <span class="sc">%&gt;%</span></span>
-<span id="cb42-4"><a href="#cb42-4" tabindex="-1"></a>  <span class="fu">eBayes</span>()</span>
-<span id="cb42-5"><a href="#cb42-5" tabindex="-1"></a>node_table <span class="ot">=</span> limma_res <span class="sc">%&gt;%</span></span>
-<span id="cb42-6"><a href="#cb42-6" tabindex="-1"></a>  <span class="fu">topTable</span>(<span class="at">number =</span> <span class="cn">Inf</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb42-7"><a href="#cb42-7" tabindex="-1"></a>  <span class="fu">data.frame</span>()  </span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a>design_matrix <span class="ot">=</span> <span class="fu">model.matrix</span>( <span class="sc">~</span> <span class="fu">factor</span>(summarygrade),<span class="at">data=</span>regressionDataset)</span>
+<span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a>limma_res <span class="ot">=</span> regressionDataset <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(sample,summarygrade)) <span class="sc">%&gt;%</span> <span class="fu">t</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb40-3"><a href="#cb40-3" tabindex="-1"></a>  <span class="fu">lmFit</span>(<span class="at">object =</span> ., <span class="at">design =</span> design_matrix) <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href="#cb40-4" tabindex="-1"></a>  <span class="fu">eBayes</span>()</span>
+<span id="cb40-5"><a href="#cb40-5" tabindex="-1"></a>node_table <span class="ot">=</span> limma_res <span class="sc">%&gt;%</span></span>
+<span id="cb40-6"><a href="#cb40-6" tabindex="-1"></a>  <span class="fu">topTable</span>(<span class="at">number =</span> <span class="cn">Inf</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb40-7"><a href="#cb40-7" tabindex="-1"></a>  <span class="fu">data.frame</span>()  </span></code></pre></div>
 <pre><code>## Removing intercept from test coefficients</code></pre>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a>node_p_vals <span class="ot">=</span> node_table<span class="sc">$</span>P.Value</span>
-<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a><span class="fu">names</span>(node_p_vals) <span class="ot">=</span> <span class="fu">rownames</span>(node_table)</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>node_p_vals <span class="ot">=</span> node_table<span class="sc">$</span>P.Value</span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a><span class="fu">names</span>(node_p_vals) <span class="ot">=</span> <span class="fu">rownames</span>(node_table)</span></code></pre></div>
 </div>
 <div id="running-wactnet" class="section level3">
 <h3>Running wActNet</h3>
@@ -7381,60 +7349,18 @@ which a higher score corresponds to a lower p-value and vice-versa. FDR
 control is implemented such that negative scores correspond to p-values
 above the FDR threshold and positive scores correspond to p-values that
 are FDR-significant (i.e., at or below the FDR threshold).</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>networkPrep <span class="ot">=</span> <span class="fu">uniform.beta.node.edge.score</span>(<span class="at">pval.node =</span> node_p_vals,</span>
-<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a>                                           <span class="at">pval.edge =</span> edge_p_vals,</span>
-<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a>                                           <span class="at">FDR.node=</span><span class="fl">0.1</span>,</span>
-<span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a>                                           <span class="at">FDR.edge=</span><span class="fl">0.05</span>,</span>
-<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a>                                           <span class="at">dat =</span><span class="fu">data.frame</span>(lateStageSmall) )</span></code></pre></div>
-<pre><code>## Warning in bumOptim(x = x, starts): One or both parameters are on the limit of
-## the defined parameter space</code></pre>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a>lateStageSmall1<span class="ot">&lt;-</span><span class="fu">data.frame</span>(lateStageSmall)</span>
-<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a></span>
-<span id="cb47-3"><a href="#cb47-3" tabindex="-1"></a>networkPrep<span class="sc">$</span>NodeScore</span></code></pre></div>
-<pre><code>##  A1BG.AS1    A4GALT     AADAC   AADACL2     AAMDC     AASDH  AASDHPPT      AATF 
-## -1.995794 -1.880014 -2.143795 -2.171150 -1.745144 -2.181047 -2.150994 -2.105271 
-##      AATK     ABCA1   ABCA17P     ABCB1     ABCB4     ABCB7     ABCC1     ABCC2 
-## -2.096886 -1.871569 -2.028775 -2.156907 -2.105093 -2.192269 -1.996090 -2.155796 
-##     ABCF2     ABCF3     ABCG1     ABCG2   ABHD17B     ABHD5    ABLIM1      ABRA 
-## -2.184197 -2.130534 -2.190553 -2.131512 -2.019382 -2.051439 -2.059921 -2.190601 
-##      ABT1     ABTB1     ACAD9     ACBD4     ACBD6      ACCS     ACKR3     ACMSD 
-## -2.102632 -2.104752 -2.034290 -2.134172 -2.183646 -1.989494 -2.071445 -2.108099 
-##      ACN9     ACOT4     ACSS1     ACTC1    ACTL7B     ACTL8   ACTN4P1     ACTR3 
-## -2.180307 -2.066485 -1.902778 -1.745682 -1.937661 -2.123208 -2.188714 -2.125696 
-##  ACTR3BP2    ACTR3C     ACTR8    ACVR1C    ACVR2B    ACVRL1      ADAL    ADAM28 
-## -2.168299 -2.122933 -2.135562 -2.015996 -2.052742 -2.193854 -2.078028 -2.142011 
-##     ADAM6     ADAM8 
-## -2.150230 -2.004423</code></pre>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a>node_p_vals[<span class="fu">order</span>(node_p_vals)]</span></code></pre></div>
-<pre><code>##      AAMDC      ACTC1      ABCA1     A4GALT      ACSS1     ACTL7B       ACCS 
-## 0.01256401 0.01263004 0.04306795 0.04676156 0.05837514 0.08200663 0.13589549 
-##   A1BG.AS1      ABCC1      ADAM8     ACVR1C    ABHD17B    ABCA17P      ACAD9 
-## 0.14449909 0.14491624 0.15717544 0.17593756 0.18183912 0.19926915 0.21027022 
-##      ABHD5     ACVR2B     ABLIM1      ACOT4      ACKR3       ADAL       AATK 
-## 0.24851442 0.25169073 0.26992731 0.28775693 0.30200791 0.32201411 0.38697547 
-##       ABT1      ABTB1      ABCB4       AATF      ACMSD     ACTR3C      ACTL8 
-## 0.40926022 0.41780303 0.41919081 0.41991780 0.43165040 0.49878277 0.50012099 
-##      ACTR3      ABCF3      ABCG2      ACBD4      ACTR8     ADAM28      AADAC 
-## 0.51239434 0.53712583 0.54227322 0.55651308 0.56409898 0.60068718 0.61121904 
-##      ADAM6   AASDHPPT      ABCC2      ABCB1   ACTR3BP2    AADACL2       ACN9 
-## 0.65077404 0.65563778 0.68704226 0.69452525 0.77606301 0.79792668 0.87239489 
-##      AASDH      ACBD6      ABCF2    ACTN4P1      ABCG1       ABRA      ABCB7 
-## 0.87871234 0.90125182 0.90609746 0.94687714 0.96399932 0.96444414 0.98024872 
-##     ACVRL1 
-## 0.99550416</code></pre>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">is.na</span>(<span class="fu">names</span>(edge_p_vals)))</span></code></pre></div>
-<pre><code>## [1] FALSE</code></pre>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a><span class="fu">names</span>(node_p_vals)</span></code></pre></div>
-<pre><code>##  [1] &quot;AAMDC&quot;    &quot;ACTC1&quot;    &quot;ABCA1&quot;    &quot;A4GALT&quot;   &quot;ACSS1&quot;    &quot;ACTL7B&quot;  
-##  [7] &quot;ACCS&quot;     &quot;A1BG.AS1&quot; &quot;ABCC1&quot;    &quot;ADAM8&quot;    &quot;ACVR1C&quot;   &quot;ABHD17B&quot; 
-## [13] &quot;ABCA17P&quot;  &quot;ACAD9&quot;    &quot;ABHD5&quot;    &quot;ACVR2B&quot;   &quot;ABLIM1&quot;   &quot;ACOT4&quot;   
-## [19] &quot;ACKR3&quot;    &quot;ADAL&quot;     &quot;AATK&quot;     &quot;ABT1&quot;     &quot;ABTB1&quot;    &quot;ABCB4&quot;   
-## [25] &quot;AATF&quot;     &quot;ACMSD&quot;    &quot;ACTR3C&quot;   &quot;ACTL8&quot;    &quot;ACTR3&quot;    &quot;ABCF3&quot;   
-## [31] &quot;ABCG2&quot;    &quot;ACBD4&quot;    &quot;ACTR8&quot;    &quot;ADAM28&quot;   &quot;AADAC&quot;    &quot;ADAM6&quot;   
-## [37] &quot;AASDHPPT&quot; &quot;ABCC2&quot;    &quot;ABCB1&quot;    &quot;ACTR3BP2&quot; &quot;AADACL2&quot;  &quot;ACN9&quot;    
-## [43] &quot;AASDH&quot;    &quot;ACBD6&quot;    &quot;ABCF2&quot;    &quot;ACTN4P1&quot;  &quot;ABCG1&quot;    &quot;ABRA&quot;    
-## [49] &quot;ABCB7&quot;    &quot;ACVRL1&quot;</code></pre>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="fu">names</span>(lateStageSmall)<span class="ot">&lt;-</span><span class="fu">as.vector</span>(<span class="fu">na.omit</span>(<span class="fu">names</span>(lateStageSmall)))</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a>networkPrep <span class="ot">=</span> wActNet<span class="sc">::</span><span class="fu">uniform.beta.node.edge.score</span>(<span class="at">pval.node =</span> node_p_vals,</span>
+<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a>                                           <span class="at">pval.edge =</span> edge_p_vals,</span>
+<span id="cb43-3"><a href="#cb43-3" tabindex="-1"></a>                                           <span class="at">FDR.node=</span><span class="fl">0.1</span>,</span>
+<span id="cb43-4"><a href="#cb43-4" tabindex="-1"></a>                                           <span class="at">FDR.edge=</span><span class="fl">0.05</span>,</span>
+<span id="cb43-5"><a href="#cb43-5" tabindex="-1"></a>                                           <span class="at">dat =</span><span class="fu">data.frame</span>(lateStageSmall) )</span>
+<span id="cb43-6"><a href="#cb43-6" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" tabindex="-1"></a><span class="co">#lateStageSmall1&lt;-data.frame(lateStageSmall)</span></span>
+<span id="cb43-9"><a href="#cb43-9" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="#cb43-10" tabindex="-1"></a><span class="fu">hist</span>(networkPrep<span class="sc">$</span>NodeScore)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABgAAAAPACAMAAADE4EJKAAABBVBMVEUAAAAAADoAAGYAOjoAOmYAOpAAZmYAZpAAZrY6AAA6ADo6OgA6Ojo6OmY6Zjo6ZmY6ZpA6ZrY6kJA6kLY6kNtmAABmOgBmOjpmOmZmZgBmZjpmZmZmZpBmkJBmkLZmkNtmtrZmtttmtv+QOgCQOjqQZgCQZjqQZmaQkGaQkJCQkLaQkNuQtpCQtraQttuQtv+Q27aQ29uQ2/+2ZgC2Zjq2kDq2kGa2kJC2kLa2tma2tpC2tra2ttu225C229u22/+2/9u2///T09PbkDrbkGbbtmbbtpDbtrbbttvb25Db27bb29vb2//b/7bb/9vb////tmb/25D/27b/29v//7b//9v///9NUz02AAAACXBIWXMAAB2HAAAdhwGP5fFlAAAgAElEQVR4nO3de4PbVponZpYlTVRrOZYT2U66POpIyrhnO7E24/IoOy1HWqdackbyjkqyWd//o4QgeAFAsApg8ZDn8jx/2FKJhRcHIN4fievkCoAiTY49AwAchwAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAAAolAAAKJQAACiUAIBkTJ9N7n049kyQEQEAyRAA7JcAyMjH08lkcvJj39//+Lr9T73e/Dno7O3B9MXn1Ti++D9u1QX3OM6L2exs9OT5wl558MXzPfXst99O5qN/vvzBfAVPHrUL37SW186r375//Wveff+getWdLx7/tsMcEzsBkJHbBcDbbxqtJE51w+tpuWPsdZwDAqBa8E/2UOrjN6vp3X29+NF8eaxX694D4M1pYxQPX+8660RLAGTkNgHw6fvWZ8korRvrDR9br7HncQ4LgMnk6a0rXTZ78WJNLgJxVX/fAfBTJ8cGT5lUCICM3CYA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" width="768" /></p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="co">#node_p_vals[order(node_p_vals)]</span></span></code></pre></div>
 </div>
 <div id="running-module-detection" class="section level4">
 <h4>Running module detection</h4>
@@ -7444,18 +7370,28 @@ subnetwork, then removes it from the network and repeats the process.
 The number of modules <code>ncluster</code> must be prespecified. The
 algorithm will stop before reaching <code>ncluster</code> if there are
 no positive nodes left in the network.</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a>modules <span class="ot">=</span> <span class="fu">MultiModuleFind</span>(<span class="at">network =</span> networkPrep<span class="sc">$</span>Network,</span>
-<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a>                          <span class="at">node.scores =</span> networkPrep<span class="sc">$</span>NodeScore,</span>
-<span id="cb56-3"><a href="#cb56-3" tabindex="-1"></a>                          <span class="at">edge.scores =</span> networkPrep<span class="sc">$</span>EdgeScore,</span>
-<span id="cb56-4"><a href="#cb56-4" tabindex="-1"></a>                          <span class="at">ncluster =</span> <span class="dv">2</span>,</span>
-<span id="cb56-5"><a href="#cb56-5" tabindex="-1"></a>                          <span class="at">method =</span> <span class="st">&quot;NodeEdge&quot;</span>)</span></code></pre></div>
-<pre><code>## Warning in runFastHeinz.e(network, node.scores, edge.scores,
-## weightratio.edge.node = weightratio.edge.node): No positive nodes</code></pre>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>modules <span class="ot">=</span> <span class="fu">MultiModuleFind</span>(<span class="at">network =</span> networkPrep<span class="sc">$</span>Network,</span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a>                          <span class="at">node.scores =</span> networkPrep<span class="sc">$</span>NodeScore,</span>
+<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a>                          <span class="at">edge.scores =</span> networkPrep<span class="sc">$</span>EdgeScore,</span>
+<span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a>                          <span class="at">ncluster =</span> <span class="dv">2</span>,</span>
+<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a>                          <span class="at">method =</span> <span class="st">&quot;NodeEdge&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning in runFastHeinz.e(network.after.cluster1, node.scores2, edge.scores2, :
+## No positive nodes</code></pre>
 <p>Examine results:</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a>modules</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a>modules</span></code></pre></div>
 <pre><code>## [[1]]
-## IGRAPH 612b8fd U--- 0 0 -- 
-## + edges from 612b8fd:</code></pre>
+## IGRAPH 933d769 UN-- 11 55 -- 
+## + attr: name (v/c), score (v/n), score (e/n), name (e/c)
+## + edges from 933d769 (vertex names):
+##  [1] SIRPB1      --STAT1    IGKV1OR2.108--PHF21B   CD163       --PODXL   
+##  [4] SIRPB1      --CXorf65  STAT1       --CXorf65  ARFRP1      --CXorf65 
+##  [7] DCXR        --CXorf65  IGKV1OR2.108--CXorf65  PHF21B      --CXorf65 
+## [10] TNFRSF17    --CXorf65  TMEM140     --CXorf65  PODXL       --CXorf65 
+## [13] CD163       --CXorf65  ARFRP1      --SIRPB1   ARFRP1      --STAT1   
+## [16] DCXR        --SIRPB1   DCXR        --STAT1    IGKV1OR2.108--SIRPB1  
+## [19] IGKV1OR2.108--STAT1    PHF21B      --SIRPB1   PHF21B      --STAT1   
+## [22] SIRPB1      --TNFRSF17 STAT1       --TNFRSF17 SIRPB1      --TMEM140 
+## + ... omitted several edges</code></pre>
 </div>
 </div>
 </div>
