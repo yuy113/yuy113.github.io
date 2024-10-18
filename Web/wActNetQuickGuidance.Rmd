@@ -5,7 +5,7 @@ date: '2024-10-09'
 output: 
   rmdformats::robobook:
     code_folding: show
-    toc_depth: 3
+    toc_depth: 5
 ---
 
 ```{r setup, include=FALSE}
@@ -171,29 +171,35 @@ dat_nodeedge<-multi.mod.e[[1]]
 
 This uses a set of public ovarian cancer data in the curatedOvarianData R package. See "??curatedOvarianData" in the RStudio console for more help with this dataset: "This package represents a manually curated data collection for gene expression meta-analysis of patients with ovarian cancer. This resource provides uniformly prepared microarray data with curated and documented clinical metadata. It allows a computational user to efficiently curatedOvarianData identify studies and patient subgroups of interest for analysis and to run such analyses immediately without the challenges posed by harmonizing heterogeneous microarray technologies, study designs, expression data processing methods, and clinical data formats."
 
+As with the simulation above, begin by installing and loading the devtools package. Use the install_github function to install wActNet from GitHub as shown below. Our package depends on two additional R packages: igraph and BioNet. Additionally, install the curatedOvarianData package containing the data to be used in this application example.
+
 Because this is full-transcriptome data, we will load the data and select only a subset of it.
 
-### Downloading and preprocessing ovarian cancer data
+### Install and load packages for downloading and preprocessing of data and for running wActNet
 
 ```{R installAndLoadPackages, cache=T}
+start.time <- Sys.time()
+library(devtools)
 
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-#BiocManager::install(version = "3.19")
 
-library(BiocManager)
-# Uncomment this line to install the affy and curatedOvarianData package 
+# Uncomment these lines to install the affy and curatedOvarianData package 
 # Takes time, so re-comment after
+
+# if (!require("BiocManager", quietly = TRUE))
+#     install.packages("BiocManager")
+# BiocManager::install(version = "3.19")
+# library(BiocManager)
+
 # BiocManager::install("affy")
 # BiocManager::install("curatedOvarianData")
 
-#library(devtools)
+library(Biobase)
 
+#install the newest version of wActNet package
 #install_github("yuy113/wActNet", force = TRUE)
-library(igraph)
-library(tidyr)
 
-library(tidyverse)
+library(igraph)
+
 
 library(affy)
 #library(BioNet)
@@ -201,6 +207,7 @@ library(dplyr)
 library(stringr)
 #library(wActNet)
 library(curatedOvarianData)
+
 
 ```
 
@@ -220,7 +227,9 @@ For a straightforward example on a small set of genes, use the chunk below:
 # Extract a subset of genes related to ovarian carcinoma 
 # based on the Human Phenotype Ontology
 # See https://hpo.jax.org/app/browse/term/HP:0025318
+library(tidyr)
 
+library(tidyverse)
 lateStageSmall = lateStage[c(1680,1681,3027,4564,8930,12243,12245,13694,13695,13701,13979,16082,16875,17980),] %>%
   t() %>%
   data.frame() %>%
@@ -251,7 +260,7 @@ To generate edge p-values, we use a permutation test on a correlation network. Y
 
 ```{R}
 edge_p_vals = wActNet::pval.perm.corr(dat = lateStageSmall,MatchId = NULL,
-               nsim = 1000, do.parallel = F, no_cores = 1)
+               nsim = 100, do.parallel = F, no_cores = 1)
 
 #names(edge_p_vals)
 
@@ -260,8 +269,7 @@ edge_p_vals = wActNet::pval.perm.corr(dat = lateStageSmall,MatchId = NULL,
 
 ### Assigning node p-values 
 
-To assign node p-values, we will regress the expression of each gene against summary grade.
-
+To assign node p-values associated with each covariate, we will regress the expression of each gene against summary grade. The variable _summarygrade_ is a binarized form of the grade of cancer.
 ```{R}
 lateStagePheno = phenoData(GSE32062.GPL6480_eset)
 gradeInfo = data.frame("sample"=row.names(pData(lateStagePheno)),
@@ -293,29 +301,37 @@ names(node_p_vals) = rownames(node_table)
 
 #### Converting p-values to node scores
 
-The `uniform.beta.node.edge.score` function is provided in `wActNet` for converting the list of p-values to scores, in which a higher score corresponds to a lower p-value and vice-versa. FDR control is implemented such that negative scores correspond to p-values above the FDR threshold and positive scores correspond to p-values that are FDR-significant (i.e., at or below the FDR threshold).  
+The `uniform.beta.node.edge.score` function is provided in `wActNet` for converting the list of p-values to scores, in which a higher score corresponds to a lower p-value and vice-versa. FDR control is implemented such that negative scores correspond to p-values above the FDR threshold and positive scores correspond to p-values that are FDR-significant (i.e., at or below the FDR threshold). 
+
+Please note: “Warning: One or both parameters are on the limit of the defined parameter space” indicates that either too many or too few nodes have statistically significant p-values (FDR-adjusted p > 0.05). This suggests that rather than the null uniform-beta mixture distribution, the actual distribution is too close to either the uniform or the beta distribution alone. The user should expand the grid of possible values to be closer to the boundary, using the optim.method, optim.lower, optim.upper, optim.control, and optim.hessian parameters of the uniform.beta.node.edge.score() function. 
 
 ```{R}
-networkPrep = wActNet::uniform.beta.node.edge.score(pval.node = node_p_vals,
-                                           pval.edge = edge_p_vals,
-                                           FDR.node=0.1,
-                                           FDR.edge=0.05,
-                                           dat =data.frame(lateStageSmall) )
+FDR.node=0.1
+FDR.edge=0.05
+networkPrep = uniform.beta.node.edge.score(pval.node = node_p_vals, pval.edge = edge_p_vals, FDR.node = FDR.node, FDR.edge = FDR.edge, dat = lateStageSmall, optim.method="Nelder-Mead", optim.lower = -Inf, optim.upper = Inf, optim.control = list(), optim.hessian = FALSE)
 
+hist(node_p_vals, breaks = 50)
 
-#lateStageSmall1<-data.frame(lateStageSmall)
-
-hist(networkPrep$NodeScore)
-#node_p_vals[order(node_p_vals)]
+#check names of pvals
+#names(node_p_vals)
+#names(edge_p_vals)
 
 ```
 
 #### Running module detection
 
-The `MultiModuleFind` function is used to find active subnetworks. It is an iterative algorithm that finds the largest scoring subnetwork, then removes it from the network and repeats the process. The number of modules `ncluster` must be prespecified. The algorithm will stop before reaching `ncluster` if there are no positive nodes left in the network.
+The `MultiModuleFind` function is used to find active subnetworks. It is an iterative algorithm that finds the largest scoring subnetwork, then removes it from the network and repeats the process. The number of modules `ncluster` must be prespecified. As above, please note that "Warning: No positive nodes" indicates that the function completed algorithm execution before reaching `ncluster` and failed to identify any further optimized or active subnetworks. Here, as with the simulated data above, we compare our proposed method based on both node scores and edge scores with Dittrich's method using node scores only.
 
 ```{R}
-modules = MultiModuleFind(network = networkPrep$Network,
+#all possible optimized subnetworks in simulated network using Dittrich's method using node scores only
+modules.n = MultiModuleFind(network = networkPrep$Network,
+                          node.scores = networkPrep$NodeScore,
+                          edge.scores = networkPrep$EdgeScore,
+                          ncluster = 2,
+                          method = "NodeOnly")
+
+#all possible optimized subnetworks in simulated network using our proposed method based on node scores and edge scores
+modules.ne = MultiModuleFind(network = networkPrep$Network,
                           node.scores = networkPrep$NodeScore,
                           edge.scores = networkPrep$EdgeScore,
                           ncluster = 2,
@@ -328,7 +344,107 @@ modules = MultiModuleFind(network = networkPrep$Network,
 Examine results:
 
 ```{R}
-modules
+modules.ne
+```
+Note that if a null result with  the number of nodes and edges are both zero is returned, you may need to either increase the sample size of genes being used or relax the FDR in order to find active subnetworks. Increasing the sample size of genes will give more possible combinations of subnetwork candidates, and relaxing the FDR will allow subnetworks that are less significant to be detected.
+
+This is a list of edges that shows the connected vertices in the active subnetwork that was detected. Note that the number of nodes is 46, and the number of edges is $46 \choose 2$ = 1035, the maximum number for a network with 46 nodes.
+
+Note that if more than one active subnetwork is detected, that second network's information can be accessed by replacing the "[[1]]" below with "[[2]]", and so on for successive subnetworks.
+```{R}
+#list of active subnetworks detected using Dittrich's method (node scores only)
+modules.n
+
+#list of active subnetworks detected using our proposed method (node scores and edge scores)
+modules.ne
+```
+
+Explore network information:
+```{r}
+#node scores
+V(modules.ne[[1]])$score
+
+#edge scores
+E(modules.ne[[1]])$score
+
+#node degree
+igraph::degree(modules.ne[[1]])
+```
+
+### Visualize Network Results as above
+```{r}
+library(visNetwork)
+multi.mod.n <- modules.n
+dat_node<-multi.mod.n[[1]]
+ E(dat_node)$dashes<-ifelse(E(dat_node)$score>0,FALSE,FALSE)
+  E(dat_node)$width<-(E(dat_node)$score+1.5)*0.3
+  V(dat_node)$color<-ifelse(V(dat_node)$score>0,"#E7298A","grey")
+  V(dat_node)$size<-(V(dat_node)$score+11)*0.5
+  
+  E(dat_node)$color<-ifelse(E(dat_node)$score>0,"#66A61E","grey")
+ 
+  data_node<- toVisNetworkData(dat_node)
+  
+  visNetwork(nodes = data_node$nodes, edges = data_node$edges, height = "800px")%>% visNodes(font=list(size=20))
+```
+
+```{r}
+multi.mod.ne <- modules.ne
+dat_nodeedge<-multi.mod.ne[[1]]
+ E(dat_nodeedge)$dashes<-ifelse(E(dat_nodeedge)$score>0,FALSE,FALSE)
+  E(dat_nodeedge)$width<-(E(dat_nodeedge)$score+1.5)*0.3
+  V(dat_nodeedge)$color<-ifelse(V(dat_nodeedge)$score>0,"#E7298A","grey")
+  V(dat_nodeedge)$size<-(V(dat_nodeedge)$score+11)*0.5
+  
+  E(dat_nodeedge)$color<-ifelse(E(dat_nodeedge)$score>0,"#66A61E","grey")
+
+  
+  data_nodeedge <- toVisNetworkData(dat_nodeedge)
+  
+  visNetwork(nodes = data_nodeedge$nodes, edges = data_nodeedge$edges, height = "800px")%>% visNodes(font=list(size=20))
+```
+
+
+
+
+#### Runtime dependence on FDR and Number of Genes
+
+```{r}
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+print(c("FDR node: ", FDR.node))
+print(c("FDR edge: ", FDR.edge))
+print(c("Number of Genes: ", setSize))
+print(c("Runtime: ", time.taken))
+print(c("Number of Nodes in Active Subnetwork: ", summary(modules.ne)[,1]))
+
+```
+
+#### Selected runtime examples from testing
+The two plots below show the impact of the number of genes and the selected FDR values on the runtime. The first plot highlights that the runtime of specific wActNet functions increases as the user increases the number of input genes.
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+NumGenes <- c(100, 300, 500, 1000)
+pval.perm.corr <- c(1, 4, 12, 42)
+MultiModuleFind <- c(.1, 2, 5, 196) #minutes
+
+runtime_dat <- as.data.frame(cbind(NumGenes, pval.perm.corr, MultiModuleFind))
+
+runtime_dat %>% pivot_longer(2:3, names_to = "Function") %>% ggplot() + geom_point(mapping = aes(x=NumGenes, y = value, color = Function, size = 3), show.legend = c(color=T,size=F)) + theme(plot.caption = element_text(hjust = 0)) + labs(title = "Runtime vs. Number of Genes for Two wActNet Functions", x = "Number of Genes", y = "Runtime in Minutes", caption = str_wrap("This plot highlights how the runtime of specific wActNet functions increases as the user increases the number of input genes. The `MultiModuleFind` function is an iterative algorithm used to find active subnetworks. The `pval.perm.corr` function performs a permutation test on a correlation network to generate edge p-values.", 100))
+```
+The second plot shows runtimes of a full script, including Dittrich's method and our proposed method, as well as visualizations for both of their respective network outputs. This plot highlights that relaxing the FDR (which allows more nodes to pass the significance threshold, and therefore creates more complex networks) results in longer runtimes.
+
+```{r}
+FDR <- c(0.05, 0.1, 0.5)
+runtimes100genes <- c(36/60, 36/60, 36/60) #seconds/(60s/min) = min
+runtimes500genes <- c(15, 21, 48) #minutes
+
+runtime_dat <- as.data.frame(cbind(FDR, runtimes100genes, runtimes500genes))
+
+runtime_dat %>% pivot_longer(2:3, names_to = "Number of Genes") %>% ggplot() + geom_point(mapping = aes(x=FDR, y = value, color = `Number of Genes`, size = 3), show.legend = c(color=T,size=F)) + theme(plot.caption = element_text(hjust = 0)) + labs(title = "Runtime vs. FDR for full script", x = "FDR", y = "Runtime in Minutes", caption = str_wrap("The second plot shows runtimes of a full script, including Dittrich's method and our proposed method, as well as visualizations for both of their respective network outputs. This plot highlights that relaxing the FDR (which allows more nodes to pass the significance threshold, and therefore creates more complex networks) results in longer runtimes.", 100))
 ```
 
 ## Contact Us / Contribute
@@ -343,3 +459,5 @@ networks: an integrated exact approach. Bioinformatics 24(13), 223–231 (2008)
 
 Beisser, D., Klau, G., Dandekar, T., Müller, T., Dittrich, M.: Bionet: an r-package for the functional analysis of biological
 networks. Bioinformatics 26(8), 1129–1130 (2010)
+
+Ganzfried BF, Riester M, Haibe-Kains B, Risch T, Tyekucheva S, Jazic I, Wang XV, Ahmadifar M, Birrer M, Parmigiani G, Huttenhower C, Waldron L: curatedOvarianData: Clinically Annotated Data for the Ovarian Cancer Transcriptome. Database, Volume 2013. doi:10.1093/database/bat013, https://academic.oup.com/database/article/doi/10.1093/database/bat013/330978 
