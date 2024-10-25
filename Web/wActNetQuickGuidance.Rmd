@@ -1,6 +1,6 @@
 ---
 title: "Active subnetwork detection Quick Start"
-author: "Yubing Yao and Rebekah Kristal"
+author: "Yubing Yao, Rebekah Kristal and Katherine H. Shutta"
 date: '2024-10-09'
 output: 
   rmdformats::robobook:
@@ -341,12 +341,12 @@ modules.ne = MultiModuleFind(network = networkPrep$Network,
 
 ```
 
-Examine results:
+### Examine results:
 
 ```{R}
 modules.ne
 ```
-Note that if a null result with  the number of nodes and edges are both zero is returned, you may need to either increase the sample size of genes being used or relax the FDR in order to find active subnetworks. Increasing the sample size of genes will give more possible combinations of subnetwork candidates, and relaxing the FDR will allow subnetworks that are less significant to be detected.
+Note that if a null result where  the number of nodes and edges are both zero is returned, you may need to either increase the sample size of genes being used or relax the FDR in order to find active subnetworks. Increasing the sample size of genes will give more possible combinations of subnetwork candidates, and relaxing the FDR will allow subnetworks that are less significant to be detected.
 
 This is a list of edges that shows the connected vertices in the active subnetwork that was detected. Note that the number of nodes is 46, and the number of edges is $46 \choose 2$ = 1035, the maximum number for a network with 46 nodes.
 
@@ -435,7 +435,6 @@ runtime_dat <- as.data.frame(cbind(NumGenes, pval.perm.corr, MultiModuleFind))
 
 runtime_dat %>% pivot_longer(2:3, names_to = "Function") %>% ggplot() + geom_point(mapping = aes(x=NumGenes, y = value, color = Function, size = 3), show.legend = c(color=T,size=F)) + theme(plot.caption = element_text(hjust = 0)) + labs(title = "Runtime vs. Number of Genes for Two wActNet Functions", x = "Number of Genes", y = "Runtime in Minutes", caption = str_wrap("This plot highlights how the runtime of specific wActNet functions increases as the user increases the number of input genes. The `MultiModuleFind` function is an iterative algorithm used to find active subnetworks. The `pval.perm.corr` function performs a permutation test on a correlation network to generate edge p-values.", 100))
 ```
-The second plot shows runtimes of a full script, including Dittrich's method and our proposed method, as well as visualizations for both of their respective network outputs. This plot highlights that relaxing the FDR (which allows more nodes to pass the significance threshold, and therefore creates more complex networks) results in longer runtimes.
 
 ```{r}
 FDR <- c(0.05, 0.1, 0.5)
@@ -452,7 +451,7 @@ This package is new, and any and all suggestions are welcomed. You can use GitHu
 
 https://github.com/yuy113/wActNet/
 
-## Reference
+## References
 
 Dittrich, M., Klau, G., Rosenwald, A., Dandekar, T., Müller, T.: Identifying functional modules in protein-protein interaction
 networks: an integrated exact approach. Bioinformatics 24(13), 223–231 (2008)
