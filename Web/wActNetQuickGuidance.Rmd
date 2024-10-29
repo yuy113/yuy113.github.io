@@ -38,7 +38,7 @@ library(igraph)
 ### Simulate data and generate P values of tests on pairwise correlations
 
 
-To illustrate the process, we simulate data ($n$ observations, $p$ features) from a multivariate normal distribution, which is then used to generate data on ${p}\choose{2}$ pairwise correlations data through the simulation of random data, which follows a multivariate normal distribution. Subsequently, we use the function `pval.perm.corr()` to conduct multiple conduct nonparametric permutation tests for all the pairwise correlations within the simulated data. Using the function and obtaining corresponding P values, we obtain the corresponding P-values from these permutation tests.
+To illustrate the process, we simulate data ($n$ observations, $p$ features) from a multivariate normal distribution, which is then used to generate data on ${p}\choose{2}$ pairwise correlations data through the simulation of random data, which follows a multivariate normal distribution. Subsequently, we use the function `pval.perm.corr()` to conduct multiple  nonparametric permutation tests for all the pairwise correlations within the simulated data. Using the function and obtaining corresponding P values, we obtain the corresponding P-values from these permutation tests.
 
 
 
@@ -341,7 +341,7 @@ modules.ne = MultiModuleFind(network = networkPrep$Network,
 
 ```
 
-### Examine results:
+### Examine results
 
 ```{R}
 modules.ne
@@ -407,7 +407,7 @@ dat_nodeedge<-multi.mod.ne[[1]]
 
 
 
-#### Runtime dependence on FDR and Number of Genes
+### Runtime dependence on FDR and Number of Genes
 
 ```{r}
 end.time <- Sys.time()
