@@ -1,0 +1,361 @@
+---
+title: "BVS.DAdj quick user guidance"
+author: "Yubing Yao"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: show
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+This page gives a step-by-step workflow for using the **BVS.DAdj** R package
+for Bayesian variable selection with dual-adjacency network-informed priors.
+The workflow is fully in R. It does **not** require MATLAB code or external
+MATLAB sampling of Bayesian Gaussian graphical models for adjacency estimation.
+
+In the example below, the two adjacency sources are:
+
+1. an external/database adjacency matrix, for example from KEGG, HMDB,
+   Reactome, pathway annotations, or prior biological knowledge;
+2. a data-driven adjacency matrix estimated from the observed predictor matrix
+   with graphical lasso in R.
+
+For binary outcomes, use `bvs_pg()` or `bvs_mh()`. For continuous outcomes, use
+`bvs_mh(outcome_type = "continuous")`.
+
+## Install and load the package
+
+```{r install-load}
+# Install from GitHub if needed.
+# install.packages("devtools")
+# devtools::install_github("yuy113/BVS.DAdj")
+
+# Suggested packages for this guide.
+# install.packages(c("MASS", "huge", "coda"))
+
+library(BVS.DAdj)
+library(MASS)
+```
+
+The package function `estimate_glasso_adj()` uses the `huge` package to build a
+binary adjacency matrix from graphical lasso. Install `huge` when using
+`adj_type = "glasso"` or when calling `estimate_glasso_adj()` directly.
+
+## Prepare outcome, predictors, and optional covariates
+
+The predictor matrix `X` should have observations in rows and predictors in
+columns. Standardizing the predictor columns is recommended before estimating a
+data-driven adjacency matrix.
+
+```{r simulate-data}
+set.seed(2026)
+
+n <- 120
+p <- 40
+active <- 1:6
+
+# Correlated active block plus noise predictors.
+Sigma <- diag(p)
+Sigma[active, active] <- 0.35
+diag(Sigma) <- 1
+X <- MASS::mvrnorm(n = n, mu = rep(0, p), Sigma = Sigma)
+X <- scale(X)
+colnames(X) <- paste0("M", seq_len(p))
+
+# Optional clinical covariate not under variable selection.
+Z <- matrix(rnorm(n), ncol = 1)
+colnames(Z) <- "clinical_covariate"
+
+# Binary outcome.
+beta_true <- rep(0, p)
+beta_true[active] <- c(1.0, 1.0, 0.8, 0.7, 0.6, 0.5)
+eta <- -0.4 + X %*% beta_true + 0.8 * Z[, 1]
+prob <- plogis(eta)
+y_binary <- rbinom(n, size = 1, prob = prob)
+
+# Continuous outcome, if needed.
+y_continuous <- as.numeric(0.5 + X %*% beta_true + 0.8 * Z[, 1] +
+                             rnorm(n, sd = 1))
+```
+
+For real data, replace `X`, `Z`, and `y_binary` or `y_continuous` with your
+cleaned analysis data.
+
+## Build an external/database adjacency matrix
+
+The external adjacency matrix must be a square `p x p` matrix with entries 0 or
+1, zero diagonal, and the same predictor order as the columns of `X`.
+
+In a real analysis, construct this matrix from a database-derived edge list
+such as KEGG, HMDB, Reactome, taxonomy, or pathway co-membership. The example
+below mimics pathway co-membership.
+
+```{r external-adjacency}
+# Example pathway labels. Replace this object with real database annotations.
+pathway_label <- rep("none", p)
+pathway_label[1:10] <- "pathway_A"
+pathway_label[11:18] <- "pathway_B"
+
+R_external <- outer(pathway_label, pathway_label, FUN = "==") * 1L
+R_external[pathway_label == "none", ] <- 0L
+R_external[, pathway_label == "none"] <- 0L
+diag(R_external) <- 0L
+rownames(R_external) <- colnames(R_external) <- colnames(X)
+
+sum(R_external) / 2
+```
+
+If you already have an edge list, convert it to an adjacency matrix:
+
+```{r external-edge-list}
+edge_list <- data.frame(
+  node1 = c("M1", "M2", "M4"),
+  node2 = c("M2", "M3", "M5")
+)
+
+R_external_from_edges <- matrix(0L, p, p,
+                                dimnames = list(colnames(X), colnames(X)))
+idx1 <- match(edge_list$node1, colnames(X))
+idx2 <- match(edge_list$node2, colnames(X))
+ok <- !is.na(idx1) & !is.na(idx2) & idx1 != idx2
+R_external_from_edges[cbind(idx1[ok], idx2[ok])] <- 1L
+R_external_from_edges[cbind(idx2[ok], idx1[ok])] <- 1L
+diag(R_external_from_edges) <- 0L
+```
+
+## Build a data-driven graphical-lasso adjacency matrix in R
+
+No MATLAB step is needed. The observed predictor matrix `X` can be passed to
+`estimate_glasso_adj()`:
+
+```{r glasso-adjacency}
+R_glasso <- estimate_glasso_adj(
+  X,
+  criterion = "ebic",
+  nlambda = 30,
+  lambda.min.ratio = 0.01
+)
+
+rownames(R_glasso) <- colnames(R_glasso) <- colnames(X)
+sum(R_glasso) / 2
+```
+
+This matrix can be used as the second adjacency source in a dual-adjacency
+model. You can also let the package estimate graphical lasso internally by
+using `adj_type = "glasso"` or `adj_type = "glasso_fixed"`, but explicitly
+calling `estimate_glasso_adj()` makes the workflow easier to inspect and
+reproduce.
+
+## Run BVS.DAdj for a binary outcome
+
+For binary logistic outcomes, `bvs_pg()` uses a Polya-Gamma Gibbs sampler.
+Here the external adjacency and the graphical-lasso adjacency are supplied as
+two fixed adjacency sources through `adj_type = "dual_fixed"`.
+
+```{r binary-bvs-pg}
+fit_pg_dual <- bvs_pg(
+  X = X,
+  y = y_binary,
+  z_dat = Z,
+  adj_type = "dual_fixed",
+  adj_fixed = R_external,
+  adj_fixed2 = R_glasso,
+  niter = 60000,
+  burnin = 10000,
+  thin = 5,
+  eta1_sd = 0.5,
+  eta2_sd = 0.5,
+  store_beta = TRUE,
+  store_gamma = TRUE
+)
+```
+
+The same binary outcome can also be fit with the Metropolis-Hastings sampler:
+
+```{r binary-bvs-mh}
+fit_mh_binary <- bvs_mh(
+  X = X,
+  y = y_binary,
+  outcome_type = "binary",
+  z_dat = Z,
+  adj_type = "dual_fixed",
+  adj_fixed = R_external,
+  adj_fixed2 = R_glasso,
+  niter = 60000,
+  burnin = 10000,
+  thin = 5,
+  eta1_sd = 0.5,
+  eta2_sd = 0.5,
+  store_beta = TRUE,
+  store_gamma = TRUE
+)
+```
+
+A shorter equivalent workflow lets the package estimate the graphical-lasso
+adjacency internally:
+
+```{r binary-glasso-fixed-shortcut}
+fit_pg_glasso_fixed <- bvs_pg(
+  X = X,
+  y = y_binary,
+  z_dat = Z,
+  adj_type = "glasso_fixed",
+  adj_fixed = R_external,
+  glasso_criterion = "ebic",
+  niter = 60000,
+  burnin = 10000,
+  thin = 5
+)
+```
+
+## Run BVS.DAdj for a continuous outcome
+
+For continuous Gaussian outcomes, use `bvs_mh()` with
+`outcome_type = "continuous"`.
+
+```{r continuous-bvs-mh}
+fit_mh_continuous <- bvs_mh(
+  X = X,
+  y = y_continuous,
+  outcome_type = "continuous",
+  z_dat = Z,
+  adj_type = "dual_fixed",
+  adj_fixed = R_external,
+  adj_fixed2 = R_glasso,
+  niter = 60000,
+  burnin = 10000,
+  thin = 5,
+  eta1_sd = 0.5,
+  eta2_sd = 0.5,
+  h_beta = 25,
+  store_beta = TRUE,
+  store_gamma = TRUE
+)
+```
+
+The internal graphical-lasso shortcut is also available for continuous
+outcomes:
+
+```{r continuous-glasso-fixed-shortcut}
+fit_mh_cont_glasso_fixed <- bvs_mh(
+  X = X,
+  y = y_continuous,
+  outcome_type = "continuous",
+  z_dat = Z,
+  adj_type = "glasso_fixed",
+  adj_fixed = R_external,
+  glasso_criterion = "ebic",
+  niter = 60000,
+  burnin = 10000,
+  thin = 5,
+  h_beta = 25
+)
+```
+
+## Optional: Bayesian GGM adjacency inside BVS.DAdj
+
+If you want Bayesian Gaussian graphical model adjacency learning rather than
+graphical lasso, use `adj_type = "ggm"` or `adj_type = "ggm_fixed"` directly
+in `bvs_mh()` or `bvs_pg()`. This is handled by the **BVS.DAdj** R package and
+does not require MATLAB scripts or exported adjacency text files.
+
+```{r internal-ggm-note}
+fit_internal_ggm <- bvs_mh(
+  X = X,
+  y = y_binary,
+  outcome_type = "binary",
+  z_dat = Z,
+  adj_type = "ggm_fixed",
+  adj_fixed = R_external,
+  niter = 60000,
+  burnin = 10000,
+  thin = 5,
+  store_Z_pip = TRUE
+)
+```
+
+For high-dimensional data, set `sparse = TRUE` for `adj_type = "ggm"` or
+`adj_type = "ggm_fixed"`. If desired, precompute the sparse scatter matrix with
+`prepare_sparse_S(X)`.
+
+## Summarize posterior inclusion probabilities
+
+Posterior inclusion probabilities (PIPs) are used to rank and select
+predictors. A common initial threshold is 0.5, but the threshold should be
+chosen for the scientific goal and the desired false-positive/false-negative
+tradeoff.
+
+```{r posterior-summary}
+summary(fit_pg_dual)
+
+pip <- if (!is.null(fit_pg_dual$gamma_pip)) {
+  fit_pg_dual$gamma_pip
+} else {
+  colMeans(fit_pg_dual$gamma)
+}
+
+pip_table <- data.frame(
+  predictor = colnames(X),
+  PIP = as.numeric(pip)
+)
+pip_table <- pip_table[order(pip_table$PIP, decreasing = TRUE), ]
+head(pip_table, 10)
+
+selected <- subset(pip_table, PIP >= 0.5)
+selected
+```
+
+## Diagnostic plots
+
+The package provides PIP plots, trace plots, and ACF plots for fitted BVS
+objects.
+
+```{r diagnostics}
+plot(fit_pg_dual, type = "pip", pip_threshold = 0.5)
+plot(fit_pg_dual, type = "trace", top_n = 6)
+plot(fit_pg_dual, type = "acf", top_n = 6)
+```
+
+For multiple chains, compare PIPs and selected predictors across independent
+seeds. The package also includes convergence and selection diagnostic utilities
+for fitted objects and posterior samples.
+
+## Recommended practical workflow
+
+1. Clean and standardize `X`; align all sample IDs and predictor names.
+2. Build `R_external` from a trusted external database or annotation source.
+3. Build `R_glasso` in R with `estimate_glasso_adj(X, criterion = "ebic")`.
+4. Fit a dual-adjacency model with `adj_type = "dual_fixed"`, or use
+   `adj_type = "glasso_fixed"` to estimate graphical lasso inside the package.
+5. Run enough MCMC iterations for the data size and check trace/ACF diagnostics.
+6. Rank predictors by PIP and report selected predictors with the chosen PIP
+   threshold.
+
+## Contact and links
+
+The R package is available at
+<https://github.com/yuy113/BVS.DAdj>.
+
+For questions, please contact Yubing Yao.
+
+## References
+
+- Polson, N. G., Scott, J. G., and Windle, J. (2013). Bayesian inference for
+  logistic models using Polya-Gamma latent variables. *Journal of the American
+  Statistical Association*.
+- Friedman, J., Hastie, T., and Tibshirani, R. (2008). Sparse inverse
+  covariance estimation with the graphical lasso. *Biostatistics*.
+- Zhao, T., Liu, H., Roeder, K., Lafferty, J., and Wasserman, L. (2012). The
+  huge package for high-dimensional undirected graph estimation in R. *Journal
+  of Machine Learning Research*.
